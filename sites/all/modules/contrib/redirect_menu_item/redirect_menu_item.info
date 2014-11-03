@@ -1,0 +1,4 @@
+name = Redirect Menu Item
+description = Allow items created with the Redirect module to be added as menu items.
+core = 7.x
+dependencies[] = redirect

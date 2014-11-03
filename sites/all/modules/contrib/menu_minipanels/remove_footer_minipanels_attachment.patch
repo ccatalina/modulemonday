@@ -1,0 +1,24 @@
+diff --git a/.gitignore b/.gitignore
+index 8e9695c..33c44c6 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -6,4 +6,4 @@ sites/*/files
+ sites/*/private
+ 
+ 
+-*.orig
+\ No newline at end of file
++*.orig
+diff --git a/sites/all/modules/contrib/menu_minipanels/menu_minipanels.module b/sites/all/modules/contrib/menu_minipanels/menu_minipanels.module
+index 7f9863d..b1f0efd 100644
+--- a/sites/all/modules/contrib/menu_minipanels/menu_minipanels.module
++++ b/sites/all/modules/contrib/menu_minipanels/menu_minipanels.module
+@@ -539,7 +539,7 @@ function menu_minipanels_page_alter(&$page) {
+     drupal_add_js($qtip_path, array('scope' => 'footer', 'weight' => -99));
+ 
+     // Load the output.
+-    $page['page_bottom']['menu_minipanels'] = menu_minipanels_panels();
++    // $page['page_bottom']['menu_minipanels'] = menu_minipanels_panels();
+   }
+ }
+ 

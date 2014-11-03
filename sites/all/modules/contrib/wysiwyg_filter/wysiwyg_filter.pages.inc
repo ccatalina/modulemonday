@@ -22,7 +22,7 @@
  * @return string
  *   Filtered HTML text.
  */
-function wysiwyg_filter_filter_wysiwyg_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+function wysiwyg_filter_filter_wysiwyg_process($text, $filter, $format, $langcode = NULL, $cache = NULL, $cache_id = NULL) {
   // Only operate on valid UTF-8 strings. This is necessary to prevent cross
   // site scripting issues on Internet Explorer 6.
   if (!drupal_validate_utf8($text)) {

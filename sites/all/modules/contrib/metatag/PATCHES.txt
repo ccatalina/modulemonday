@@ -1,0 +1,3 @@
+# undefined_index_instance.patch
+
+modified metatag.inc/DrupalTextMetaTag::getValue to contemplate the possibility that the $options associative array argument could not provide a value for a 'instance' key

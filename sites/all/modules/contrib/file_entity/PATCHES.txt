@@ -1,0 +1,5 @@
+Hide temporary files from file entities admin listing:
+https://drupal.org/files/file_entity-hide_temp_files-2028089-3.patch
+
+For further discussion of this issue, see also:
+https://drupal.org/node/2045611

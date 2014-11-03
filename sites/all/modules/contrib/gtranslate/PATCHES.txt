@@ -1,0 +1,2 @@
+https://drupal.org/files/gtranslate-support-https-1406698-3.patch
+remove-select-language.patch

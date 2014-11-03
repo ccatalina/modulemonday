@@ -1,0 +1,29 @@
+diff --git a/gtranslate.module b/gtranslate.module
+index 6a3a1bc..92c7864 100644
+--- a/gtranslate.module
++++ b/gtranslate.module
+@@ -69,7 +69,7 @@ function gtranslate_block_view($delta = '') {
+         $block_content .= "}, 'google_translate_element');";
+         $block_content .= '}';
+         $block_content .= '</script>';
+-        $block_content .= '<script type="text/javascript" src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>';
++        $block_content .= '<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>';
+ 
+     } elseif(variable_get('gtranslate_method', 'onfly') == 'onfly') {
+ 
+@@ -94,7 +94,7 @@ body {top:0 !important;}\n
+         $block_content .= <<<EOT
+ <div id="google_translate_element2"></div>
+ <script type="text/javascript">function googleTranslateElementInit2() {new google.translate.TranslateElement({pageLanguage: '$default_language', autoDisplay: false}, 'google_translate_element2');}</script>
+-<script type="text/javascript" src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script>
++<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script>
+ EOT;
+ 
+         switch(variable_get('gtranslate_look', 'both')) {
+@@ -491,4 +491,4 @@ function gtranslate_menu() {
+     );
+ 
+     return $items;
+-} // function gtranslate_menu
+\ No newline at end of file
++} // function gtranslate_menu

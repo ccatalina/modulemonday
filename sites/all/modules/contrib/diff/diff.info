@@ -1,0 +1,13 @@
+name = Diff
+description = Show differences between content revisions.
+core = 7.x
+
+files[] = DiffEngine.php
+
+
+; Information added by drush on 2013-07-06
+version = "7.x-3.2+0-dev"
+core = "7.x"
+project = "diff"
+datestamp = "1373161963"
+

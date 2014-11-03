@@ -1,0 +1,1 @@
+leaflet-zoom-formatter-settings-1711668-36.patch

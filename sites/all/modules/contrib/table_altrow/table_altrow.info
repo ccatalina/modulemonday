@@ -1,0 +1,7 @@
+name = Table Alternate Rows
+description = Automatically adds even/odd classes to tables.
+core = 7.x
+
+files[] = table_altrow.module
+project = "table_altrow"
+

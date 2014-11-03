@@ -5,10 +5,10 @@
 */
 
 /**
- * Implements hook_views_data().
+ * Implements hook_field_views_data().
 */
 function manualcrop_views_data() {
-  $data['manualcrop']['table']['group'] = t('Manual Crop');
+  $data['manualcrop']['table']['group'] = t('Manual crop');
 
   // File id.
   $data['manualcrop']['fid'] = array(
@@ -84,14 +84,15 @@ function manualcrop_views_data() {
     'help' => t('Width of the crop area.'),
   ) + $numeric_default;
 
-  // Height.
+    // Height.
   $data['manualcrop']['height'] = array(
     'title' => t('Crop area: height'),
     'help' => t('Height of the crop area.'),
   ) + $numeric_default;
 
-  // Join the file_managed table.
+  // Join
   $data['manualcrop']['table']['join'] = array(
+    // Link ourself to the {file_managed} table.
     'file_managed' => array(
       'field' => 'fid',
       'left_field' => 'fid',

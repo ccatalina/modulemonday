@@ -1,0 +1,14 @@
+diff --git a/workbench_moderation.node.inc b/workbench_moderation.node.inc
+index 5baaf59..451a1d4 100644
+--- a/workbench_moderation.node.inc
++++ b/workbench_moderation.node.inc
+@@ -82,6 +82,9 @@ function workbench_moderation_node_history_view($node) {
+   // Page title.
+   drupal_set_title(t('History of %title', array('%title' => $node->title)), PASS_THROUGH);
+ 
++  // see https://drupal.org/node/2011762
++  drupal_get_messages('warning', TRUE);
++
+   // Alert if there is no live node
+   if (!isset($node->workbench_moderation['published'])) {
+     drupal_set_message(t('Currently there is no published revision of this node.'), 'warning');

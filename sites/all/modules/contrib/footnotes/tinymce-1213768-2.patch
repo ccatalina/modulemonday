@@ -1,0 +1,67 @@
+diff --git a/footnotes_wysiwyg/tinymce_plugin/editor_plugin.js b/footnotes_wysiwyg/tinymce_plugin/editor_plugin.js
+index 2fac1a5..0202a82 100755
+--- a/footnotes_wysiwyg/tinymce_plugin/editor_plugin.js
++++ b/footnotes_wysiwyg/tinymce_plugin/editor_plugin.js
+@@ -21,9 +21,11 @@
+       ed.addCommand('Footnotes', function() {
+         ed.windowManager.open({
+           file : url + '/footnote.htm',
+-          width : 400,
+-          height : 300,
++          width : 370,
++          height : 200,
+           inline : 1
++        }, {
++          window: window,
+         });
+       });
+ 
+diff --git a/footnotes_wysiwyg/tinymce_plugin/footnote.htm b/footnotes_wysiwyg/tinymce_plugin/footnote.htm
+index ff23ec2..cc02adb 100755
+--- a/footnotes_wysiwyg/tinymce_plugin/footnote.htm
++++ b/footnotes_wysiwyg/tinymce_plugin/footnote.htm
+@@ -22,7 +22,7 @@
+   // This uses Drupal translation strings, NOT the TinyMCE facilities
+   // The Drupal object doesn't exist here, we have to fetch it from the opening browser 
+   // window, which is a Drupal generated page.
+-  document.write('<h3>'+window.opener.Drupal.t('Enter footnote :')+'</h3>'); 
++  document.write('<h3>'+tinyMCEPopup.getWindowArg("window").Drupal.t('Enter footnote :')+'</h3>');
+ -->
+ </script>
+ 		<textarea id="fntext" name="fntext" class="mceFocus" cols="15" rows="10"></textarea>
+@@ -36,7 +36,7 @@
+                 <div style="float: left">
+ <script type="text/javascript">
+ <!-- 
+-  document.write('<input type="submit" id="insert" name="insert" value="'+window.opener.Drupal.t('Insert')+'" />'); 
++  document.write('<input type="submit" id="insert" name="insert" value="'+tinyMCEPopup.getWindowArg("window").Drupal.t('Insert')+'" />');
+ -->
+ </script>
+                 </div>
+@@ -44,7 +44,7 @@
+                 <div style="float: right">
+ <script type="text/javascript">
+ <!-- 
+-  document.write('<input type="button" id="cancel" name="cancel" value="'+window.opener.Drupal.t('Cancel')+'" onclick="tinyMCEPopup.close();" />'); 
++  document.write('<input type="button" id="cancel" name="cancel" value="'+tinyMCEPopup.getWindowArg("window").Drupal.t('Cancel')+'" onclick="tinyMCEPopup.close();" />');
+ -->
+ </script>
+                 </div>
+diff --git a/footnotes_wysiwyg/tinymce_plugin/img/note_add.png b/footnotes_wysiwyg/tinymce_plugin/img/note_add.png
+index 6307bb8f851fde8209070c97a5d7a6a8d4d814cb..78de9d6178f85e165b639cee3bc30950fa551730 100755
+GIT binary patch
+delta 305
+zcmV-10nYy60pkK8iBL{Q4GJ0x0000DNk~Le0000K0000K2nGNE0F8+q4Ur)|f7=HM
+z3j`f-I+N-E000?uMObu0Z*6U5Zgc=ca%Ew3Wn>_CX>@2HM@dakSAh-}0002KNkl<Z
+zILqbIF=_%q6vpx21|(f_h!mER6cK{pVXQoWg_d5xCXi~qLMl5ipuMKBv#`?2LafGS
+z3SAe%x?33X!DE<#_vd}@8}406f8ma18ZPd$PEyS%%`{xW@ldtpzX@#N8yjpf#ao$_
+zL(ba~ulUIe;<vOX_`nm|al(LcRcmQP;PTd;b}^6p3um>z1vtz=vQ=2?*x17h9#Jm>
+z%zm3gJa@6)@mVH-L5|I@GM1mw#{w&iP%8uc2RZ>n!8e$g(c)DA0000<2SrXqu0mjf
+D4`+O6
+
+delta 174
+zcmaFN^pH`pGr-TCmrII^fq{Y7)59eQNb`d*2OE&IzBbisqM~j6Ee=LrHhrdd8x8^m
+z6FprVLp07OCrAh>EPDFye`k03KlR%Tr=K|gSJ%6D(rH_o#B9#)KlLdx^Y8PA^AsED
+zEl(D9F>Fvtcr^EqeEUKk9hX~uq6Uc@8wGiVuk~=xxoIW7Tt->&T$+nea*D(+1_sru
+X>L>h7ng0SUWAJqKb75KMl+XkK%r-jl
+

@@ -61,11 +61,8 @@ function manualcrop_requirements($phase) {
  * Implements hook_install().
  */
 function manualcrop_install() {
-  // Our hooks should run after the Insert module.
+  // Hooks have to run after the Insert module.
   db_query("UPDATE {system} SET weight = 20 WHERE name = 'manualcrop'");
-
-  // Grant the crop permission to all user roles.
-  _manualcrop_grant_crop_permission();
 }
 
 /**
@@ -74,11 +71,6 @@ function manualcrop_install() {
 function manualcrop_uninstall() {
   variable_del('manualcrop_cache_control');
   variable_del('manualcrop_skip_js_check');
-
-  // Remove settings for individual file types.
-  foreach (file_type_load_all() as $type) {
-    variable_del('manualcrop_file_entity_settings_' . $type->type);
-  }
 }
 
 /**
@@ -93,13 +85,6 @@ function manualcrop_schema() {
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE
-      ),
-      'vid' => array(
-        'description' => 'The {file_managed_revisions}.vid (if it exists) of the file.',
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0,
       ),
       'style_name' => array(
         'description' => 'The machine name of the style.',
@@ -143,7 +128,7 @@ function manualcrop_schema() {
         'columns' => array('fid' => 'fid'),
       ),
     ),
-    'primary key' => array('fid', 'vid', 'style_name'),
+    'primary key' => array('fid', 'style_name'),
   );
 
   return $schema;
@@ -292,8 +277,7 @@ function manualcrop_update_7103(&$sandbox) {
 }
 
 /**
- * Remove unneeded image effect data and rename the "reusestyle" setting
- * to "reuse_crop_style".
+ * Rename the "reusestyle" effect setting to "reuse_crop_style".
  */
 function manualcrop_update_7104(&$sandbox) {
   require_once 'manualcrop.helpers.inc';
@@ -302,88 +286,20 @@ function manualcrop_update_7104(&$sandbox) {
     $effect = $info['effect'];
     $save = FALSE;
 
-    if (_manualcrop_is_own_effect($effect, FALSE)) {
-      // Remove the style_name setting.
-      if (isset($effect['data']['style_name'])) {
-        unset($effect['data']['style_name']);
-        $save = TRUE;
-      }
-
-      // Rename the reusestyle setting.
-      if (isset($effect['data']['reusestyle'])) {
-        $effect['data']['reuse_crop_style'] = $effect['data']['reusestyle'];
-        unset($effect['data']['reusestyle']);
-        $save = TRUE;
-      }
-
-      if ($save) {
-        image_effect_save($effect);
-      }
+    // Unset the style_name key, we don't need it for reuse effects.
+    if (!_manualcrop_is_own_effect($effect, TRUE) && isset($effect['data']['style_name'])) {
+      unset($effect['data']['style_name']);
+      $save = TRUE;
     }
-  }
-}
 
-/**
- * Grant the "Crop images" pemission to all user roles.
- */
-function manualcrop_update_7105(&$sandbox) {
-  _manualcrop_grant_crop_permission();
-}
+    if (isset($effect['data']['reusestyle'])) {
+      $effect['data']['reuse_crop_style'] = $effect['data']['reusestyle'];
+      unset($effect['data']['reusestyle']);
+      $save = TRUE;
+    }
 
-/**
- * Add the style_priority setting to all auto reuse image effects.
- */
-function manualcrop_update_7106(&$sandbox) {
-  require_once 'manualcrop.helpers.inc';
-
-  foreach (manualcrop_styles_with_crop(TRUE) as $info) {
-    $effect = $info['effect'];
-
-    if (_manualcrop_is_own_effect($effect, FALSE) && $effect['name'] == 'manualcrop_auto_reuse') {
-      $effect['data'] += array('style_priority' => array());
+    if ($save) {
       image_effect_save($effect);
     }
-  }
-}
-
-/**
- * Re-run update 7103 to remove all styles that weren't selected in the interface.
- */
-function manualcrop_update_7107(&$sandbox) {
-  manualcrop_update_7103($sandbox);
-}
-
-/**
- * Add the vid field.
- */
-function manualcrop_update_7108() {
-  // Add the vid field.
-  db_add_field('manualcrop', 'vid', array(
-    'description' => 'The {file_managed_revisions}.vid (if it exists) of the file.',
-    'type' => 'int',
-    'unsigned' => TRUE,
-    'not null' => TRUE,
-    'default' => 0,
-  ));
-
-  // Update the primary key so it includes teh vid field.
-  db_drop_primary_key('manualcrop');
-  db_add_primary_key('manualcrop', array('fid', 'vid', 'style_name'));
-}
-
-/**
- * Grant the crop permission to all user roles.
- */
-function _manualcrop_grant_crop_permission() {
-  foreach (user_roles() as $rid => $role) {
-    db_merge('role_permission')
-      ->key(array(
-        'rid' => $rid,
-        'permission' => 'use manualcrop',
-      ))
-      ->fields(array(
-        'module' => 'manualcrop',
-      ))
-      ->execute();
   }
 }

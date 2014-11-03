@@ -1,0 +1,11 @@
+name = Expire Cache Page
+description = Small helper module for sites that use core page caching and the Expire module
+core = 7.x
+dependencies[] = expire
+
+; Information added by drupal.org packaging script on 2012-07-04
+version = "7.x-1.0"
+core = "7.x"
+project = "expire_cache_page"
+datestamp = "1341417412"
+

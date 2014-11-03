@@ -1,0 +1,50 @@
+diff --git a/sites/all/modules/contrib/menu_minipanels/menu_minipanels.module b/sites/all/modules/contrib/menu_minipanels/menu_minipanels.module
+index df84990..7f9863d 100644
+--- a/sites/all/modules/contrib/menu_minipanels/menu_minipanels.module
++++ b/sites/all/modules/contrib/menu_minipanels/menu_minipanels.module
+@@ -318,20 +318,31 @@ function menu_minipanels__preprocess_link($link) {
+  */
+ function menu_minipanels_panels($mlid = NULL, $minipanel_name = NULL) {
+   static $panels = array();
++  if (!$panels) {
++    $url = request_uri();
++    if ($cache = cache_get('menu_minipanels_panels_' . $url)) {
++      $panels = $cache->data;
++      return $panels;
++    }
++  }
+   if ($minipanel_name != NULL) {
+-    $panel = panels_mini_block_view($minipanel_name);
+-    // Convert the block to a render array.
+-    $panel['#markup'] = $panel['content'];
+-    unset($panel['content']);
+-    unset($panel['subject']);
+-    // Wrap the minipanel.
+-    $panel['#prefix'] = '<div class="menu-minipanels menu-minipanel-' . $mlid . '">';
+-    $panel['#suffix'] = '</div>';
++    if ($cache = cache_get('menu_minipanels_panel_' . $minipanel_name)) {
++      $panel = $cache->data;
++    }
++    else {
++      $panel = panels_mini_block_view($minipanel_name);
++      // Convert the block to a render array.
++      $panel['#markup'] = $panel['content'];
++      unset($panel['content']);
++      unset($panel['subject']);
++      // Wrap the minipanel.
++      $panel['#prefix'] = '<div class="menu-minipanels menu-minipanel-' . $mlid . '">';
++      $panel['#suffix'] = '</div>';
++      cache_set('menu_minipanels_panel_' . $minipanel_name, $panel);
++    }
+-     $panels[] = $panel;
++     $panels[$minipanel_name] = $panel;
+   }
+-  else {
+-    return $panels;
+-  }
++  $url = request_uri();
++  cache_set('menu_minipanels_panels_' . $url, $panels);
++  return $panels;
+ }
+ 
+ /**

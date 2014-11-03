@@ -1,0 +1,144 @@
+<?php
+/**
+ * @file
+ * Enables adding redirects as menu items.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function redirect_menu_item_menu() {
+  $items = array();
+  $items['<redirect>'] = array(
+    'page callback' => 'drupal_not_found',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_menu_link_alter().
+ */
+function redirect_menu_item_menu_link_alter(&$item) {
+  if (strpos($item['link_path'], '<redirect>/') === 0) {
+    // Flag this link to be altered by hook_translated_menu_link_alter().
+    $item['options']['alter'] = TRUE;
+  }
+}
+
+/**
+ * Implements hook_translated_menu_link_alter().
+ */
+function redirect_menu_item_translated_menu_link_alter(&$item, $map) {
+  if (strpos($item['link_path'], '<redirect>/') === 0) {
+    $item['href'] = str_replace('<redirect>/', '', $item['href']);
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function redirect_menu_item_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id == 'menu_edit_item') {
+    $form['link_path']['#default_value'] = str_replace('<redirect>/', '', $form['link_path']['#default_value']);
+    // Add to beginning of validate handlers.
+    array_unshift($form['#validate'], 'redirect_menu_item_menu_edit_item_validate');
+    // Add to end of submit handlers.
+    $form['#submit'][] = 'redirect_menu_item_menu_edit_item_submit';
+  }
+  if ($form_id == 'menu_item_delete_form') {
+    $form['#submit'][] = 'redirect_menu_item_menu_item_delete_form_submit';
+  }
+}
+
+/**
+ * Validate handler.
+ */
+function redirect_menu_item_menu_edit_item_validate($form, &$form_state) {
+  $item = &$form_state['values'];
+  if ($item['#redirect'] = redirect_load_by_source($item['link_path'], 'en')) {
+    // Prepend the <redirect> tag to the path, in order to route it through the
+    // dummy menu item. Without this dummy router, $item['access'] would fail
+    // to be TRUE in _menu_tree_check_access().
+    $item['link_path'] = '<redirect>/' . $item['link_path'];
+  }
+}
+
+/**
+ * Submit handler.
+ */
+function redirect_menu_item_menu_edit_item_submit($form, &$form_state) {
+  // If the old item was a path redirect, delete it from the rid/mlid
+  // mapping table.
+  $old_item = &$form_state['values']['original_item'];
+  if (strpos($old_item['link_path'], '<redirect>/') === 0) {
+    db_delete('redirect_menu_item')
+      ->condition('mlid', $old_item['mlid'])
+      ->execute();
+  }
+  // If the new item is a path redirect, add it to the rid/mlid mapping table.
+  $item = &$form_state['values'];
+  if (strpos($item['link_path'], '<redirect>/') === 0) {
+    $data = array(
+      'mlid' => $item['mlid'],
+      'rid' => $item['#redirect']->rid,
+    );
+    drupal_write_record('redirect_menu_item', $data);
+  }
+}
+
+/**
+ * Submit handler.
+ */
+function redirect_menu_item_menu_item_delete_form_submit($form, &$form_state) {
+  // If the old item was a path redirect, delete it from the rid/mlid
+  // mapping table.
+  $old_item = &$form['#item'];
+  if (strpos($old_item['link_path'], '<redirect>/') === 0) {
+    db_delete('redirect_menu_item')
+      ->condition('mlid', $old_item['mlid'])
+      ->execute();
+  }
+}
+
+/**
+ * Implements hook_redirect_update().
+ */
+function redirect_menu_item_redirect_update($redirect) {
+  $result = db_query("SELECT mlid FROM {redirect_menu_item} WHERE rid = :rid", array(
+    ':rid' => $redirect->rid,
+  ));
+  while ($mlid = $result->fetchField()) {
+    $item = menu_link_load($mlid);
+    $item['parent'] = $item['menu_name'] . ':' . $item['plid'];
+    $item['original_item'] = $item;
+    $item['original_item']['router_path'] = '';
+    $item['link_path'] = "<redirect>/" . $redirect->source;
+        if (!menu_link_save($item)) {
+      drupal_set_message(t('There was an error saving the menu link.'), 'error');
+    }
+    else {
+      drupal_set_message(t('Your configuration has been saved.'));
+    }
+  }
+}
+
+/**
+ * Implements hook_redirect_delete().
+ */
+function redirect_menu_item_redirect_delete($redirect) {
+  $result = db_query("SELECT mlid FROM {redirect_menu_item} WHERE rid = :rid", array(
+    ':rid' => $redirect->rid,
+  ));
+  while ($mlid = $result->fetchField()) {
+    $item = menu_link_load($mlid);
+    $t_args = array('%title' => $item['link_title']);
+    menu_link_delete($mlid);
+    drupal_set_message(t('The menu link %title has been deleted.', $t_args));
+    watchdog('menu', 'Deleted menu link %title.', $t_args, WATCHDOG_NOTICE);
+  }
+  db_delete('redirect_menu_item')
+    ->condition('rid', $redirect->rid)
+    ->execute();
+}

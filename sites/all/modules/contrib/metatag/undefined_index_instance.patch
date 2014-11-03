@@ -1,0 +1,19 @@
+diff --git a/sites/all/modules/contrib/metatag/metatag.inc b/sites/all/modules/contrib/metatag/metatag.inc
+index 0466bea..826ad1b 100644
+--- a/sites/all/modules/contrib/metatag/metatag.inc
++++ b/sites/all/modules/contrib/metatag/metatag.inc
+@@ -94,7 +94,13 @@ class DrupalTextMetaTag extends DrupalDefaultMetaTag {
+   }
+ 
+   public function getValue(array $options = array()) {
+-    $name = "metatag:" . $options["instance"] . ":" . $this->info["name"];
++    $prefix = "metatag:";
++    $suffix = $this->info["name"];
++    $instance = '';
++    if(isset($options['instance'])){
++      $instance = $options['instance'] . ":";
++    }
++    $name = "metatag:" . $instance . $this->info["name"];
+ 
+     $options += array(
+       'token data' => array(),

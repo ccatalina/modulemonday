@@ -1,0 +1,13 @@
+diff --git a/sites/all/modules/contrib/gtranslate/gtranslate.module b/sites/all/modules/contrib/gtranslate/gtranslate.module
+index 92c7864..e82fbae 100644
+--- a/sites/all/modules/contrib/gtranslate/gtranslate.module
++++ b/sites/all/modules/contrib/gtranslate/gtranslate.module
+@@ -182,7 +182,7 @@ EOT;
+             }; break;
+             case 'dropdown': {
+                 $block_content .= '<select onchange="doGTranslate(this);">';
+-                $block_content .= '<option value="">Select Language</option>';
++                //$block_content .= '<option value="">Select Language</option>';
+ 
+                 $i = 0;
+                 foreach($languages as $lang => $lang_name) {

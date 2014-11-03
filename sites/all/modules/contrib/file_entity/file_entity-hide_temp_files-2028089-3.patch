@@ -1,0 +1,43 @@
+diff --git a/admin_views_default/file.admin-content-file.inc b/admin_views_default/file.admin-content-file.inc
+index e0c8a74..5f8c1c2 100644
+--- a/admin_views_default/file.admin-content-file.inc
++++ b/admin_views_default/file.admin-content-file.inc
+@@ -4,7 +4,6 @@
+  * @file
+  * Default view for user administration.
+  */
+-
+ $view = new view();
+ $view->name = 'admin_views_file';
+ $view->description = 'Find and manage files.';
+@@ -228,6 +227,10 @@ $handler->display->display_options['fields']['delete']['table'] = 'file_managed'
+ $handler->display->display_options['fields']['delete']['field'] = 'delete';
+ $handler->display->display_options['fields']['delete']['label'] = '';
+ $handler->display->display_options['fields']['delete']['element_label_colon'] = FALSE;
++/* Field: File: Path */
++$handler->display->display_options['fields']['uri']['id'] = 'uri';
++$handler->display->display_options['fields']['uri']['table'] = 'file_managed';
++$handler->display->display_options['fields']['uri']['field'] = 'uri';
+ /* Filter criterion: File: Name */
+ $handler->display->display_options['filters']['filename']['id'] = 'filename';
+ $handler->display->display_options['filters']['filename']['table'] = 'file_managed';
+@@ -279,6 +282,12 @@ $handler->display->display_options['filters']['uid']['expose']['remember_roles']
+   1 => 0,
+   3 => 0,
+ );
++/* Filter criterion: File: Path */
++$handler->display->display_options['filters']['uri']['id'] = 'uri';
++$handler->display->display_options['filters']['uri']['table'] = 'file_managed';
++$handler->display->display_options['filters']['uri']['field'] = 'uri';
++$handler->display->display_options['filters']['uri']['operator'] = 'not_starts';
++$handler->display->display_options['filters']['uri']['value'] = 'temporary://';
+ 
+ /* Display: System */
+ $handler = $view->new_display('system', 'System', 'system_1');
+@@ -309,5 +318,6 @@ $translatables['admin_views_file'] = array(
+   t('User'),
+   t('Size'),
+   t('Uploaded'),
++  t('Path'),
+   t('System'),
+ );

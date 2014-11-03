@@ -1,0 +1,27 @@
+diff --git a/sites/all/modules/contrib/addtoany/addtoany.module b/sites/all/modules/contrib/addtoany/addtoany.module
+index 7c1cce8..f33dd64 100644
+--- a/sites/all/modules/contrib/addtoany/addtoany.module
++++ b/sites/all/modules/contrib/addtoany/addtoany.module
+@@ -144,10 +144,10 @@ function addtoany_page_alter(&$page) {
+ 	// Only output script when AddToAny is used
+ 	if ( ! $_addtoany_init || addtoany_ignore_match(current_path())) {
+ 		return;
+-  }
+-
+-
+-	$script_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://static.addtoany.com/menu/page.js' : 'http://static.addtoany.com/menu/page.js';
++	}
++        global $base_url;
++  
++	$script_url = $base_url . '/' . drupal_get_path('module', 'addtoany') . '/page.js';
+ 
+ 	$javascript_header = "var a2a_config=a2a_config||{},"
+ 			. "da2a={done:false,"
+@@ -184,6 +184,7 @@ function addtoany_page_alter(&$page) {
+ 	$javascript_footer = "da2a.targets=["
+ 			. implode(",", $_addtoany_targets)
+ 		. "];\n"
++		. "a2a_config.no_3p = 1;"
+ 		. "da2a.html_done=true;"
+ 		. "if(da2a.script_ready&&!da2a.done)da2a.init();" // External script may load before html_done=true, but will only init if html_done=true.  So call da2a.init() if external script is ready, and if da2a.init() hasn't been called already.  Otherwise, wait for callback to call da2a.init()
+ 		. "da2a.script_load();"; // Load external script if not already called with the first AddToAny instance.  Fixes issues where first instance code is processed internally but without actual code output

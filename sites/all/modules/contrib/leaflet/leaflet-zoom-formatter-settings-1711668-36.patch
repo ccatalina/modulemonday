@@ -1,0 +1,468 @@
+diff --git a/leaflet.formatters.inc b/leaflet.formatters.inc
+index e190e49..4ba75f6 100644
+--- a/leaflet.formatters.inc
++++ b/leaflet.formatters.inc
+@@ -10,7 +10,36 @@ function leaflet_field_formatter_info() {
+     $formatters['geofield_leaflet'] = array(
+       'label' => t('Leaflet'),
+       'field types' => array('geofield'),
+-      'settings' => array('leaflet_map' => '', 'icon' => '', 'height' => 400, 'popup' => 0),
++      'settings' => array(
++        'leaflet_map' => '',
++        'height' => 400,
++        'popup' => 0,
++        'zoom' => array(
++          'initialZoom' => '',
++          'minZoom' => 1,
++          'maxZoom' => 19,
++        ),
++        'icon' => array(
++          'iconUrl' => '',
++          'shadowUrl' => '',
++          'iconSize' => array(
++            'x' => '',
++            'y' => '',
++          ),
++          'iconAnchor' => array(
++            'x' => '',
++            'y' => '',
++          ),
++          'shadowAnchor' => array(
++            'x' => '',
++            'y' => '',
++          ),
++          'popupAnchor' => array(
++            'x' => '',
++            'y' => '',
++          ),
++        ),
++      ),
+     );
+   }
+ 
+@@ -23,7 +52,6 @@ function leaflet_field_formatter_info() {
+ function leaflet_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+   $display = $instance['display'][$view_mode];
+   $settings = $display['settings'];
+-
+   $element = array();
+ 
+   if ($display['type'] == 'geofield_leaflet') {
+@@ -46,6 +74,98 @@ function leaflet_field_formatter_settings_form($field, $instance, $view_mode, $f
+       '#field_suffix' => t('px'),
+       '#element_validate' => array('element_validate_integer_positive'),
+     );
++    $element['zoom'] = array(
++      '#title' => t('Zoom Settings'),
++      '#description' => t('These settings will override the zoom settings defined in the map definition.  Exceeding the min/max zoom the map supports will have no effect.'),
++      '#type' => 'fieldset',
++      '#tree' => TRUE,
++      '#collapsible' => TRUE,
++      '#collapsed' => empty($settings['zoom']['initialZoom']) && empty($settings['zoom']['minZoom']) && empty($settings['zoom']['maxZoom']),
++    );
++    $element['zoom']['initialZoom'] = array(
++      '#title' => t('Initial zoom level'),
++      '#description' => t('The starting zoom level when this map is rendered.  Restricted by min and max zoom settings.'),
++      '#type' => 'select',
++      '#options' => array(
++        0 => t("Use map defined setting"),
++        1 => t('0 - Low'),
++        2 => 1,
++        3 => 2,
++        4 => 3,
++        5 => 4,
++        6 => 5,
++        7 => 6,
++        8 => 7,
++        9 => 8,
++        10 => 9,
++        11 => 10,
++        12 => 11,
++        13 => 12,
++        14 => 13,
++        15 => 14,
++        16 => 15,
++        17 => 16,
++        18 => 17,
++        19 => t('18 - High')),
++      '#default_value' => isset($settings['zoom']['initialZoom']) ? $settings['zoom']['initialZoom'] : 0,
++      '#element_validate' => array('leaflet_initial_zoom_validate'),
++    );
++    $element['zoom']['minZoom'] = array(
++      '#title' => t('Minimum zoom level'),
++      '#description' => t('The minimum zoom level allowed'),
++      '#type' => 'select',
++      '#options' => array(
++        0 => t('Use map defined setting'),
++        1 => t('0 - Low'),
++        2 => 1,
++        3 => 2,
++        4 => 3,
++        5 => 4,
++        6 => 5,
++        7 => 6,
++        8 => 7,
++        9 => 8,
++        10 => 9,
++        11 => 10,
++        12 => 11,
++        13 => 12,
++        14 => 13,
++        15 => 14,
++        16 => 15,
++        17 => 16,
++        18 => 17,
++        19 => t('18 - High')),
++      '#default_value' => isset($settings['zoom']['minZoom']) ? $settings['zoom']['minZoom'] : 0,
++      '#element_validate' => array('leaflet_min_zoom_validate'),
++    );
++    $element['zoom']['maxZoom'] = array(
++      '#title' => t('Maximum zoom level'),
++      '#description' => t('The maximum zoom level allowed'),
++      '#type' => 'select',
++      '#options' => array(
++        0 => t('Use map defined setting'),
++        1 => t('0 - Low'),
++        2 => 1,
++        3 => 2,
++        4 => 3,
++        5 => 4,
++        6 => 5,
++        7 => 6,
++        8 => 7,
++        9 => 8,
++        10 => 9,
++        11 => 10,
++        12 => 11,
++        13 => 12,
++        14 => 13,
++        15 => 14,
++        16 => 15,
++        17 => 16,
++        18 => 17,
++        19 => t('18 - High')),
++      '#default_value' => isset($settings['zoom']['maxZoom']) ? $settings['zoom']['maxZoom'] : 0,
++      '#element_validate' => array('leaflet_max_zoom_validate'),
++    );
+     $element['popup'] = array(
+       '#title' => t('Popup'),
+       '#description' => t('Show a popup for single location fields.'),
+@@ -56,6 +176,7 @@ function leaflet_field_formatter_settings_form($field, $instance, $view_mode, $f
+       '#title' => t('Map Icon'),
+       '#description' => t('These settings will overwrite the icon settings defined in the map definition.'),
+       '#type' => 'fieldset',
++      '#tree' => TRUE,
+       '#collapsible' => TRUE,
+       '#collapsed' => !isset($settings['icon']['iconUrl']),
+     );
+@@ -187,19 +308,125 @@ function leaflet_icon_validate($element, &$form_state, $form) {
+ }
+ 
+ /**
++ * Validation callback for the initial zoom level.
++ *
++ * @param $element
++ * @param $form_state
++ * @param $form
++ */
++function leaflet_initial_zoom_validate($element, &$form_state, $form) {
++  $field_name = check_plain($form_state['formatter_settings_edit']);
++  $min_zoom = (int) $form_state['input']['fields'][$field_name]['settings_edit_form']['settings']['zoom']['minZoom'];
++  $max_zoom = (int) $form_state['input']['fields'][$field_name]['settings_edit_form']['settings']['zoom']['maxZoom'];
++  $initial_zoom = (int) $form_state['input']['fields'][$field_name]['settings_edit_form']['settings']['zoom']['initialZoom'];
++  if (!empty($initial_zoom) && (!empty($min_zoom) || (!empty($max_zoom)))) {
++    if (($min_zoom > $initial_zoom || empty($min_zoom)) || ($initial_zoom > $max_zoom || empty($max_zoom))) {
++      form_error($element, t('The initial zoom level should be between the minimum and maximum zoom settings'));
++    }
++  }
++}
++/**
++ * Validation callback for min zoom level.
++ *
++ * @param $element
++ * @param $form_state
++ * @param $form
++ */
++function leaflet_min_zoom_validate($element, &$form_state, $form) {
++  $field_name = check_plain($form_state['formatter_settings_edit']);
++  $min_zoom = (int) $form_state['input']['fields'][$field_name]['settings_edit_form']['settings']['zoom']['minZoom'];
++  $max_zoom = (int) $form_state['input']['fields'][$field_name]['settings_edit_form']['settings']['zoom']['maxZoom'];
++  if (!empty($min_zoom) && !empty($max_zoom)) {
++    if ($min_zoom > $max_zoom) {
++      form_error($element, t('The minimum zoom setting must be less than or equal to the maximum zoom setting'));
++    }
++  }
++}
++/**
++ * Validation callback for max zoom level.
++ *
++ * @param $element
++ * @param $form_state
++ * @param $form
++ */
++function leaflet_max_zoom_validate($element, &$form_state, $form) {
++  $field_name = check_plain($form_state['formatter_settings_edit']);
++  $min_zoom = (int) $form_state['input']['fields'][$field_name]['settings_edit_form']['settings']['zoom']['minZoom'];
++  $max_zoom = (int) $form_state['input']['fields'][$field_name]['settings_edit_form']['settings']['zoom']['maxZoom'];
++  if (!empty($min_zoom) && !empty($max_zoom)) {
++    if ($min_zoom > $max_zoom) {
++      form_error($element, t('The maximum zoom setting must be greater than or equal to the minimum zoom setting'));
++    }
++  }
++}
++/**
++ * Handler validation callback for the initial zoom level.
++ *
++ * @param $element
++ * @param $form_state
++ * @param $form
++ */
++function leaflet_initial_zoom_handler_validate($element, &$form_state, $form) {
++  $min_zoom = (int) $form_state['input']['style_options']['zoom']['minZoom'];
++  $max_zoom = (int) $form_state['input']['style_options']['zoom']['maxZoom'];
++  $initial_zoom = (int) $form_state['input']['style_options']['zoom']['initialZoom'];
++  if (!empty($initial_zoom) && (!empty($min_zoom) || (!empty($max_zoom)))) {
++    if (($min_zoom > $initial_zoom || empty($min_zoom)) || ($initial_zoom > $max_zoom || empty($max_zoom))) {
++      form_error($element, t('The initial zoom level should be between the minimum and maximum zoom settings'));
++    }
++  }
++}
++/**
++ * Handler validation callback for min zoom level.
++ *
++ * @param $element
++ * @param $form_state
++ * @param $form
++ */
++function leaflet_min_zoom_handler_validate($element, &$form_state, $form) {
++  $min_zoom = (int) $form_state['input']['style_options']['zoom']['minZoom'];
++  $max_zoom = (int) $form_state['input']['style_options']['zoom']['maxZoom'];
++  if (!empty($min_zoom) && !empty($max_zoom)) {
++    if ($min_zoom > $max_zoom) {
++      form_error($element, t('The minimum zoom setting must be less than or equal to the maximum zoom setting'));
++    }
++  }
++}
++/**
++ * Handler validation callback for max zoom level.
++ *
++ * @param $element
++ * @param $form_state
++ * @param $form
++ */
++function leaflet_max_zoom_handler_validate($element, &$form_state, $form) {
++  $min_zoom = (int) $form_state['input']['style_options']['zoom']['minZoom'];
++  $max_zoom = (int) $form_state['input']['style_options']['zoom']['maxZoom'];
++  if (!empty($min_zoom) && !empty($max_zoom)) {
++    if ($min_zoom > $max_zoom) {
++      form_error($element, t('The maximum zoom setting must be greater than or equal to the minimum zoom setting'));
++    }
++  }
++}
++
++/**
+  * Implements hook_field_formatter_settings_summary().
+  */
+ function leaflet_field_formatter_settings_summary($field, $instance, $view_mode) {
+   $display = $instance['display'][$view_mode];
+   $settings = $display['settings'];
+ 
+-  $summary = '';
++  $summary = array();
+ 
+   if ($display['type'] == 'geofield_leaflet') {
+-    $summary = t('Leaflet map: @map', array('@map' => $settings['leaflet_map']));
++    $summary[] = t('Leaflet map: @map', array('@map' => $settings['leaflet_map']));
++    $summary[] = t('Height: @height' . 'px', array('@height' => $settings['height']));
++    $summary[] = t('Initial zoom: @initialZoom', array('@initialZoom' => (empty($settings['zoom']['initialZoom']) ? 'Map defined setting' : $settings['zoom']['initialZoom']-1)));
++    $summary[] = t('Minimum zoom: @minZoom', array('@minZoom' => (empty($settings['zoom']['minZoom']) ? 'Map defined setting' : $settings['zoom']['minZoom']-1)));
++    $summary[] = t('Maximum zoom: @maxZoom', array('@maxZoom' => (empty($settings['zoom']['maxZoom']) ? 'Map defined setting' : $settings['zoom']['maxZoom']-1)));
+   }
+ 
+-  return $summary;
++  return implode('<br />', $summary);
+ }
+ 
+ /**
+@@ -230,6 +457,18 @@ function leaflet_field_formatter_view($entity_type, $entity, $field, $instance,
+           }
+         }
+ 
++        // apply field formatter zoom settings - will override hook_leaflet_map_info() values
++        // -1 to get the correct value (the #Options array starts at 0 which = Use map defined value)
++        if (!empty($settings['zoom']['initialZoom'])) {
++          $map['settings']['zoom'] = strval($settings['zoom']['initialZoom'] - 1);
++        }
++        if (!empty($settings['zoom']['minZoom'])) {
++          $map['settings']['minZoom'] = strval($settings['zoom']['minZoom'] - 1);
++        }
++        if (!empty($settings['zoom']['maxZoom'])) {
++          $map['settings']['maxZoom'] = strval($settings['zoom']['maxZoom'] - 1);
++        }
++
+         $element[0] = array('#markup' => leaflet_render_map($map, $features, $settings['height'] . 'px'));
+ 
+         break;
+diff --git a/leaflet_views/leaflet_views_plugin_style.inc b/leaflet_views/leaflet_views_plugin_style.inc
+index 6802bdf..a592396 100644
+--- a/leaflet_views/leaflet_views_plugin_style.inc
++++ b/leaflet_views/leaflet_views_plugin_style.inc
+@@ -33,7 +33,31 @@ class leaflet_views_plugin_style extends views_plugin_style {
+     $options['view_mode'] = array('default' => 'full');
+     $options['map'] = array('default' => '');
+     $options['height'] = array('default' => '400');
+-    $options['icon'] = array();
++    $options['icon']['contains'] = array(
++      'iconUrl' => array('default' => ''),
++      'shadowUrl' => array('default' => ''),
++      'iconSize' => array('contains' => array(
++        'x' => array('default' => ''),
++        'y' => array('default' => ''),
++      )),
++      'iconAnchor' => array('contains' => array(
++        'x' => array('default' => ''),
++        'y' => array('default' => ''),
++      )),
++      'shadowAnchor' => array('contains' => array(
++        'x' => array('default' => ''),
++        'y' => array('default' => ''),
++      )),
++      'popupAnchor' => array('contains' => array(
++        'x' => array('default' => ''),
++        'y' => array('default' => ''),
++      )),
++    );
++    $options['zoom']['contains'] = array(
++      'initialZoom' => array('default' => ''),
++      'minZoom' => array('default' => 1),
++      'maxZoom' => array('default' => 19),
++    );
+     return $options;
+   }
+ 
+@@ -160,9 +184,106 @@ class leaflet_views_plugin_style extends views_plugin_style {
+       '#default_value' => isset($this->options['hide_empty']) ? $this->options['hide_empty'] : TRUE
+     );
+ 
++    $form['zoom'] = array(
++      '#title' => t('Zoom Settings'),
++      '#description' => t('These settings will override the zoom settings defined in the map definition.  Exceeding the min/max zoom the map supports will have no effect.'),
++      '#type' => 'fieldset',
++      '#tree' => TRUE,
++      '#collapsible' => TRUE,
++      '#collapsed' => TRUE,
++    );
++
++    $form['zoom']['initialZoom'] = array(
++      '#title' => t('Initial zoom level'),
++      '#description' => t('The starting zoom level when this map is rendered.  Restricted by min and max zoom settings.'),
++      '#type' => 'select',
++      '#options' => array(
++        0 => t("Use map defined setting"),
++        1 => t('0 - Low'),
++        2 => 1,
++        3 => 2,
++        4 => 3,
++        5 => 4,
++        6 => 5,
++        7 => 6,
++        8 => 7,
++        9 => 8,
++        10 => 9,
++        11 => 10,
++        12 => 11,
++        13 => 12,
++        14 => 13,
++        15 => 14,
++        16 => 15,
++        17 => 16,
++        18 => 17,
++        19 => t('18 - High')),
++      '#default_value' => isset($this->options['zoom']['initialZoom']) ? $this->options['zoom']['initialZoom'] : 0,
++      '#element_validate' => array('leaflet_initial_zoom_handler_validate'),
++    );
++
++    $form['zoom']['minZoom'] = array(
++      '#title' => t('Minimum zoom level'),
++      '#description' => t('The minimum zoom level allowed'),
++      '#type' => 'select',
++      '#options' => array(
++        0 => t('Use map defined setting'),
++        1 => t('0 - Low'),
++        2 => 1,
++        3 => 2,
++        4 => 3,
++        5 => 4,
++        6 => 5,
++        7 => 6,
++        8 => 7,
++        9 => 8,
++        10 => 9,
++        11 => 10,
++        12 => 11,
++        13 => 12,
++        14 => 13,
++        15 => 14,
++        16 => 15,
++        17 => 16,
++        18 => 17,
++        19 => t('18 - High')),
++      '#default_value' => isset($this->options['zoom']['minZoom']) ? $this->options['zoom']['minZoom'] : 0,
++      '#element_validate' => array('leaflet_min_zoom_handler_validate'),
++    );
++
++    $form['zoom']['maxZoom'] = array(
++      '#title' => t('Maximum zoom level'),
++      '#description' => t('The maximum zoom level allowed'),
++      '#type' => 'select',
++      '#options' => array(
++        0 => t('Use map defined setting'),
++        1 => t('0 - Low'),
++        2 => 1,
++        3 => 2,
++        4 => 3,
++        5 => 4,
++        6 => 5,
++        7 => 6,
++        8 => 7,
++        9 => 8,
++        10 => 9,
++        11 => 10,
++        12 => 11,
++        13 => 12,
++        14 => 13,
++        15 => 14,
++        16 => 15,
++        17 => 16,
++        18 => 17,
++        19 => t('18 - High')),
++      '#default_value' => isset($this->options['zoom']['maxZoom']) ? $this->options['zoom']['maxZoom'] : 0,
++      '#element_validate' => array('leaflet_max_zoom_handler_validate'),
++    );
++
+     $form['icon'] = array(
+       '#title' => t('Map Icon'),
+       '#type' => 'fieldset',
++      '#tree' => TRUE,
+       '#collapsible' => TRUE,
+       '#collapsed' => !isset($this->options['icon']['iconUrl']),
+     );
+@@ -357,6 +478,18 @@ class leaflet_views_plugin_style extends views_plugin_style {
+ 
+       $map = leaflet_map_get_info($this->options['map']);
+ 
++      // apply field formatter zoom settings - will override hook_leaflet_map_info() values
++      // -1 to get the correct value (the #Options array starts at 0 which = Use map defined value)
++      if (!empty($this->options['zoom']['initialZoom'])) {
++        $map['settings']['zoom'] = strval($this->options['zoom']['initialZoom'] - 1);
++      }
++      if (!empty($this->options['zoom']['minZoom'])) {
++        $map['settings']['minZoom'] = strval($this->options['zoom']['minZoom'] - 1);
++      }
++      if (!empty($this->options['zoom']['maxZoom'])) {
++        $map['settings']['maxZoom'] = strval($this->options['zoom']['maxZoom'] - 1);
++      }
++
+       if (!empty($data) || (isset($this->options['hide_empty']) && !$this->options['hide_empty'])) {
+         return leaflet_render_map($map, $data, $this->options['height'] . 'px');
+       }

@@ -1,0 +1,2 @@
+The following patches have been applied to this project:
+- https://drupal.org/files/tinymce-1213768-2.patch

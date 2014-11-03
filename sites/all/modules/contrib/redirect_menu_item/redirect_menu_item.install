@@ -1,0 +1,40 @@
+<?php
+/**
+ * @file
+ * Installation hooks.
+ */
+
+/**
+ * Implements of hook_uninstall().
+ */
+function redirect_menu_item_uninstall() {
+  // Delete variables.
+  db_delete('variable')
+    ->condition('name', 'redirect_menu_item_%%', 'LIKE')
+    ->execute();
+  cache_clear_all('variables', 'cache_bootstrap');
+}
+
+/**
+ * Implements hook_schema().
+ */
+function redirect_menu_item_schema() {
+  $schema['redirect_menu_item'] = array(
+    'fields' => array(
+      'mlid' => array(
+        'type' => 'int',
+        'length' => 10,
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'rid' => array(
+        'type' => 'int',
+        'length' => 11,
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+    ),
+    'primary key' => array('mlid'),
+  );
+  return $schema;
+}

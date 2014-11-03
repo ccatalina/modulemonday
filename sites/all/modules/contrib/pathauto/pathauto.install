@@ -12,7 +12,7 @@
  */
 function pathauto_schema() {
   $schema['pathauto_state'] = array(
-    'description' => 'The status of each entity alias (whether it was automatically generated or not).',
+    'description' => '',
     'fields' => array(
       'entity_type' => array(
         'type' => 'varchar',
@@ -235,11 +235,11 @@ function pathauto_update_7006() {
           'description' => 'An entity type.',
         ),
         'entity_id' => array(
-          'type' => 'varchar',
-          'length' => 255,
-          'not null' => TRUE,
-          'description' => 'An entity ID.',
-        ),
+	  'type' => 'varchar',
+	  'length' => 255,
+	  'not null' => TRUE,
+	  'description' => 'An entity ID.',
+	),
         'pathauto' => array(
           'type' => 'int',
           'size' => 'tiny',
@@ -256,13 +256,6 @@ function pathauto_update_7006() {
       // that we can cleanly disable that module.
       db_rename_table('pathauto_persist', 'pathauto_state');
       db_create_table('pathauto_persist', $schema['pathauto_state']);
-      // Change the entity_id column to varchar because the entity system does
-      // not assume serial or integer IDs (see [#1823494]).
-      db_drop_primary_key('pathauto_state');
-      db_change_field('pathauto_state', 'entity_id', 'entity_id',
-            array('type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'description' => 'An entity ID.'));
-      db_add_primary_key('pathauto_state', array('entity_type', 'entity_id'));
-      // Disable the module and inform the user.
       if (module_exists('pathauto_persist')) {
         module_disable(array('pathauto_persist'));
       }

@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * Implements hook_expire_cache().
+ */
+function expire_cache_page_expire_cache($urls) {
+  // If anonymous page caching is enabled
+  if (variable_get('cache', FALSE)) {
+    // As of Drupal 7, you can pass multiple items into cache_clear_all().
+    // TODO, is this more efficient that a foreach? The resulting IN() SQL might not use indexes efficiently.
+    cache_clear_all($urls, 'cache_page');
+  }
+}

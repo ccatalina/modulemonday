@@ -3,16 +3,14 @@ description = Enables files inside of the WYSIWYG editor to be displayed using a
 package = Media
 core = 7.x
 
-dependencies[] = media_wysiwyg
+dependencies[] = media
+dependencies[] = wysiwyg
 
 configure = admin/config/media/wysiwyg-view-mode
 
-files[] = media_wysiwyg_view_mode.test
-
-
-; Information added by drush on 2014-08-14
-version = "7.x-2.0-alpha3+98-dev"
+; Information added by drupal.org packaging script on 2013-10-25
+version = "7.x-2.0-alpha3"
 core = "7.x"
 project = "media"
-datestamp = "1408058048"
+datestamp = "1382744872"
 
