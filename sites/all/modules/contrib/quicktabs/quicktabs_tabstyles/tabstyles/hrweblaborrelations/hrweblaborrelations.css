@@ -1,0 +1,109 @@
+
+/* hrweblaborrelations style tabs */
+
+.quicktabs_main.quicktabs-style-hrweblaborrelations {
+  border-bottom: 1px solid #d6534e;
+  border-style: solid;
+border-top-width: thin;
+border-left-width: thin;
+border-right-width: thin;
+border-bottom-width: 10px;
+  padding: 10px 5px 2px;
+background: -moz-linear-gradient(top,  rgba(239,221,203,1) 0%, rgba(239,221,203,0.99) 1%, rgba(255,255,254,0) 99%, rgba(255,255,255,0) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(239,221,203,1)), color-stop(1%,rgba(239,221,203,0.99)), color-stop(99%,rgba(255,255,254,0)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  rgba(239,221,203,1) 0%,rgba(239,221,203,0.99) 1%,rgba(255,255,254,0) 99%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  rgba(239,221,203,1) 0%,rgba(239,221,203,0.99) 1%,rgba(255,255,254,0) 99%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  rgba(239,221,203,1) 0%,rgba(239,221,203,0.99) 1%,rgba(255,255,254,0) 99%,rgba(255,255,255,0) 100%); /* IE10+ */
+background: linear-gradient(to bottom,  rgba(239,221,203,1) 0%,rgba(239,221,203,0.99) 1%,rgba(255,255,254,0) 99%,rgba(255,255,255,0) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efddcb', endColorstr='#00ffffff',GradientType=0 ); /* IE6-9 */
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations {
+  margin: 0;
+  padding: 0 15px;
+  font-size: 1em;
+  list-style: none;
+  height: 24px;
+  /*background: transparent url(images/tab-bar.png) repeat-x left bottom;*/
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li {
+  float: left;
+  margin: 0 -5px -5px -5px;
+  padding: 0 0 0 10px;
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li a {
+ font: normal 16px/180% Plantagenet Cherokee;
+  font-size-adjust: none;
+  display: block;
+  margin: 0;
+  padding: 1px 22px 0px 12px;
+  border-width: 0;
+  color: #e5e5e5;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  text-transform: uppercase;
+  background: transparent url(images/tab-right-sep.png) no-repeat right -38px;
+}
+
+/*override hover*/
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li:hover {color: #ffffff;
+  /*background: transparent url(images/tab-left-sep.png) no-repeat left -76px;*/
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li a:hover {color: #ffffff;
+  
+  /*background: transparent url(images/tab-right-sep.png) no-repeat right -76px;*/
+}
+
+/*override focus*/
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li.active a:focus { border: 1.5px dotted #ffffff; color: #ffffff;
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li:focus { border: 1.5px dotted #ffffff; color: #ffffff; 
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li a:focus { border: 1.5px dotted #ffffff; color: #ffffff;
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li.first:focus { border: 1.5px dotted #ffffff; color: #ffffff;
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li.last a:focus { border: 1.5px dotted #ffffff; color: #ffffff;
+}
+
+/*override active tab*/
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li.active { color: #ffffff;
+  background: transparent url(images/tab-left-sep.png) no-repeat left 0;
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li.active a { color: #ffffff;
+  background: transparent url(images/tab-right-sep.png) no-repeat right 0;
+}
+
+/*override first tab*/
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li.first { color: #e5e5e5;
+  background: transparent url(images/tab-left.png) no-repeat left -38px;
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li.first:hover { color: #ffffff;
+  /*background: transparent url(images/tab-left.png) no-repeat left -76px;*/
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li.first.active { color: #ffffff;
+  background: transparent url(images/tab-left.png) no-repeat left 0px;
+}
+
+/*override last tab*/
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li.last a { color: #e5e5e5;
+  background: transparent url(images/tab-right.png) no-repeat right -38px;
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li.last a:hover { color: #ffffff;
+  /*background: transparent url(images/tab-right.png) no-repeat right -76px;*/
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrweblaborrelations li.last.active a { color: #ffffff;
+  background:transparent url(images/tab-right.png) no-repeat right 0px;
+}

@@ -1,0 +1,67 @@
+
+.quicktabs_wrapper.quicktabs-style-hrwebnavlist {
+  margin: 0;
+  width: 100%;
+  display: block;
+}
+
+ul.quicktabs-tabs.quicktabs-style-hrwebnavlist {
+  float: left;
+  padding: 4px 0;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+  width: 20%;
+}
+ul.quicktabs-tabs.quicktabs-style-hrwebnavlist li {
+  display: block;
+  margin-right: -1px;
+  padding: 0;
+  background: #D5DDEF; 
+  border-top: 1px solid #2f4157;
+  border-left: 1px solid #2f4157;
+  border-bottom: 1px solid #2f4157;
+  border-right: 1px solid #2f4157;
+  
+}
+ul.quicktabs-tabs.quicktabs-style-hrwebnavlist li a {
+  display: block;
+  color: #2f4157;
+  text-align: right;
+  text-decoration: none;
+  margin: 0;
+  padding: 0 10px 0 0;
+  height: 23px;
+  font-weight: bold;
+}
+ul.quicktabs-tabs.quicktabs-style-hrwebnavlist li.active {
+  background: #2f4157; /* IE6-9 */
+  border-top: 1px solid #2f4157;
+  border-left: 1px solid #2f4157;
+  border-bottom: 1px solid #2f4157;
+}
+ul.quicktabs-tabs.quicktabs-style-hrwebnavlist li.active a {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.quicktabs_main.quicktabs-style-hrwebnavlist {
+  float: left;
+  border: 1px solid #2f4157;
+  background: -moz-linear-gradient(top,  rgba(213,221,239,1) 0%, rgba(213,221,239,0.93) 7%, rgba(255,255,255,0) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(213,221,239,1)), color-stop(7%,rgba(213,221,239,0.93)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  rgba(213,221,239,1) 0%,rgba(213,221,239,0.93) 7%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  rgba(213,221,239,1) 0%,rgba(213,221,239,0.93) 7%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  rgba(213,221,239,1) 0%,rgba(213,221,239,0.93) 7%,rgba(255,255,255,0) 100%); /* IE10+ */
+background: linear-gradient(to bottom,  rgba(213,221,239,1) 0%,rgba(213,221,239,0.93) 7%,rgba(255,255,255,0) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5ddef', endColorstr='#00ffffff',GradientType=0 ); /* IE6-9 */
+
+  padding: 10px;
+  min-height: 64px;
+  position: relative;
+  z-index: 1;
+  width: 75%;
+}
+
+/* force "see more" link placement for this style */
+.more-link { width: 70% !important; }
