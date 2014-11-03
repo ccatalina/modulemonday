@@ -1,0 +1,396 @@
+
+#superfish-1{
+    text-align: center;
+    font-size: 85%;
+    max-width: 100%;
+}
+#superfish-2, #superfish-3, #superfish-4, #superfish-5, #superfish-6, #superfish-7, #superfish-8, #superfish-9, #superfish-10{
+    text-align: left;
+    font-size: 85%;
+}
+
+.sf-menu ul {
+  left: 0;
+  position: absolute;
+  top: -99999em;
+  min-width:100%; /* at least the size of the header */
+  width:auto; /* size the block automatically */
+}
+
+.sf-menu ul li{
+    white-space:nowrap; /* prevent word wrap */
+}
+
+#block-superfish-1{ margin-left: 0px; margin-right: 0px; margin-bottom: 0px; }
+
+/*SIDEBAR MENU - First Element*/
+li#menu-531-1.first.odd.sf-item-1.sf-depth-1.sf-no-children {
+	background-color:#B3BED5;
+	/*background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #114E5E));*/s
+	font-weight: bold;	
+}
+
+/*Main Menu*/
+
+.sf-menu.sf-style-hrwebsuperfish a {
+  
+  border-top: 1.5px solid #CFDEFF;
+  border-bottom: 1.5px solid #CFDEFF;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #CFDEFF;
+  border-color:#003461;
+}
+
+.sf-menu.sf-style-hrwebsuperfish a,
+/*COLOR FOR LINKS - VISITED - ACTIVE - HOVER*/
+.sf-menu.sf-style-hrwebsuperfish a.link {
+  color:#07275A; 
+  
+}
+.sf-menu.sf-style-hrwebsuperfish a:visited  {
+  color:#003461;    
+ }
+ 
+.sf-menu.sf-style-hrwebsuperfish a:active {
+  color:white;
+}
+
+.sf-menu.sf-style-hrwebsuperfish a:hover {
+  color:white;
+  background-color:#4C5B72;
+}
+
+.sf-menu.sf-style-hrwebsuperfish a:focus {
+  color:white;
+  background-color:#4C5B72;
+}
+
+/*MAIN/SIDEBAR MENU'S*/
+
+/* Main Menu - Benefits hover color */
+#menu-1289-1 a:hover {
+  color:white;
+  background-color:#354009;
+}
+#menu-1289-1 a:focus {
+  color:white;
+  background-color:#354009;
+}
+#menu-1289-1 #current a{
+  color:white;
+  background-color:#354009;
+}
+
+/* Benefits sub-menu hover */
+#superfish-10 a:hover {
+  color:white;
+  background-color:#354009;
+}
+#superfish-10 a:focus {
+  color:white;
+  background-color:#354009;
+
+}
+
+/*Sidebar Menu - Benefits Title*/
+#menu-1290-10 a.sf-depth-1{
+	background-color:#354009;
+	color:#ffffff;
+	font-size: 1.2em;
+}
+	
+#menu-1290-10 a:hover{
+	background-color:#354009;
+	font-size: 1.2em;
+	text-decoration:underline;
+}
+
+/* Main-Menu Employee Resources hover color */
+#menu-715-1 a:hover {
+  color:white;
+  background-color:#c55930;
+}
+#menu-715-1 a:focus {
+  color:white;
+  background-color:#c55930;
+}
+
+/* Employee Resources sub-menu hover */
+#superfish-2 a:hover {
+  color:white;
+  background-color:#c55930;
+}
+#superfish-2 a:focus {
+  color:white;
+  background-color:#c55930;
+}
+
+/*Sidebar Menu - Employee Resources Title*/
+#menu-1291-2 a.sf-depth-1{
+	background-color:#c55930;
+	color:white;
+	font-size: 1.2em;
+}
+#menu-1291-2 a:hover {
+	background-color:#c55930;
+	font-size: 1.2em;
+	text-decoration:underline;
+}
+
+
+/* Main Menu - Employment hover color */
+#menu-725-1 a:hover  {
+  color:white;
+  background-color:#bb7ab2;
+}
+#menu-725-1 a:focus  {
+  color:white;
+  background-color:#bb7ab2;
+}
+
+/* Employment sub-menu hover */
+#superfish-3 a:hover {
+  color:white;
+  background-color:#bb7ab2;
+}
+#superfish-3 a:focus {
+  color:white;
+  background-color:#bb7ab2;
+}
+/*Sidebar Menu - Employment Title*/
+#menu-1293-3 a.sf-depth-1{
+	background-color:#bb7ab2;
+	color:white;
+	font-size: 1.2em;
+}
+#menu-1293-3 a:hover {
+	background-color:#bb7ab2;
+	font-size: 1.2em;
+	text-decoration:underline;
+}
+
+/* Main Menu - Time & Attendance hover color */
+#menu-724-1 a:hover  {
+  color:white;
+  background-color:#0d69b1;
+}
+#menu-724-1 a:focus  {
+  color:white;
+  background-color:#0d69b1;
+}
+/* Time & Attendance sub-menu hover */
+#superfish-7 a:hover {
+  color:white;
+  background-color:#0d69b1;
+}
+#superfish-7 a:focus {
+  color:white;
+  background-color:#0d69b1;
+}
+
+/*Sidebar Menu - Time & Attendance Title*/
+#menu-1295-7 a.sf-depth-1{
+	background-color:#0d69b1;
+	color:white;
+	font-size: 1.2em;
+}
+#menu-1295-7 a:hover{
+	background-color:#0d69b1;
+	font-size: 1.2em;
+	text-decoration:underline;
+}
+
+/* Main Menu - Payroll hover color */
+#menu-718-1 a:hover  {
+  color:white;
+  background-color:#5f6267;
+}
+#menu-718-1 a:focus  {
+  color:white;
+  background-color:#5f6267;
+}
+
+/* Payroll sub-menu hover */
+#superfish-6 a:hover {
+  color:white;
+  background-color:#5f6267;
+}
+#superfish-6 a:focus {
+  color:white;
+  background-color:#5f6267;
+}
+/*Sidebar - Payroll Title*/
+#menu-1292-6 a.sf-depth-1{
+	background-color:#5f6267;
+	color:white;
+	font-size: 1.2em;
+}
+#menu-1292-6 a:hover{
+	background-color:#5f6267;
+	font-size: 1.2em;
+	text-decoration:underline;
+}
+
+/* Main Menu - Health & Safety hover color */
+#menu-720-1 a:hover  {
+  color:white;
+  background-color:#3a2044;
+}
+#menu-720-1 a:focus {
+  color:white;
+  background-color:#3a2044;
+}
+
+/* Health & Safety sub-menu hover */
+#superfish-4 a:hover {
+  color:white;
+  background-color:#3a2044;
+}
+#superfish-4 a:focus {
+  color:white;
+  background-color:#3a2044;
+}
+/*Sidebar Menu - Health & Safety Title*/
+#menu-1294-4 a.sf-depth-1 {
+	background-color:#3a2044;
+	color:white;
+	font-size: 1.2em;
+}
+#menu-1294-4 a:hover{
+	background-color:#3a2044;
+	font-size: 1.2em;
+	text-decoration:underline;
+}
+
+/*Main Menu - Labor Relations hover color */
+#menu-719-1 a:hover  {
+  color:white;
+  background-color:#d6534e;
+}
+#menu-719-1 a:focus {
+  color:white;
+  background-color:#d6534e;
+}
+
+/* Labor Relations sub-menu hover */
+#superfish-5 a:hover {
+  color:white;
+  background-color:#d6534e;
+}
+#superfish-5 a:focus {
+  color:white;
+  background-color:#d6534e;
+}
+/*Sidebar Menu - Labor Relations Title*/
+#menu-1296-5 a.sf-depth-1{
+	background-color:#d6534e;
+	color:white;
+	font-size: 1.2em;
+}
+#menu-1296-5 a:hover{
+	background-color:#d6534e;
+	font-size: 1.2em;
+	text-decoration:underline;
+}
+
+/* Main Menu - Supervisors hover color */
+#menu-721-1 a:hover {
+  color:white;
+  background-color:#71a4c5;
+}
+#menu-721-1 a:focus {
+  color:white;
+  background-color:#71a4c5;
+}
+
+
+/* Supervisors sub-menu hover */
+#superfish-8 a:hover {
+  color:white;
+  background-color:#71a4c5;
+}
+#superfish-8 a:focus {
+  color:white;
+  background-color:#71a4c5;
+}
+/*Sidebar Menu - Supervisors Title*/
+#menu-1297-8 a.sf-depth-1 {
+	background-color:#71a4c5;
+	color:white;
+	font-size: 1.2em;
+}
+#menu-1297-8 a:hover{
+	background-color:#71a4c5;
+	font-size: 1.2em;
+	text-decoration:underline;
+}
+
+/*Footer Menu*/
+#superfish-11 a:focus {
+  color:white;
+  background-color:#4C5B72;
+
+}
+/* Forms hover color */
+#menu-944-1 a:hover  {
+  color:white;
+  background-color:#f57220;
+}
+#menu-944-1 a:focus  {
+  color:white;/*#003461; */
+  background-color:#f57220;
+}
+
+
+.sf-menu.sf-style-hrwebsuperfish li,
+.sf-menu.sf-style-hrwebsuperfish.sf-navbar {
+ background-color:#D5DDEF;
+ color:#003461;
+
+
+/*background: rgb(167,207,223); /* Old browsers */
+/*background: -moz-linear-gradient(top,  rgba(167,207,223,1) 0%, rgba(35,83,138,1) 90%); /* FF3.6+ */
+/*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(167,207,223,1)), color-stop(90%,rgba(35,83,138,1))); /* Chrome,Safari4+ */
+/*background: -webkit-linear-gradient(top,  rgba(167,207,223,1) 0%,rgba(35,83,138,1) 90%); /* Chrome10+,Safari5.1+ */
+/*background: -o-linear-gradient(top,  rgba(167,207,223,1) 0%,rgba(35,83,138,1) 90%); /* Opera 11.10+ */
+/*background: -ms-linear-gradient(top,  rgba(167,207,223,1) 0%,rgba(35,83,138,1) 90%); /* IE10+ */
+/*background: linear-gradient(to bottom,  rgba(167,207,223,1) 0%,rgba(35,83,138,1) 90%); /* W3C */
+/*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7cfdf', endColorstr='#23538a',GradientType=0 ); /* IE6-9 */
+
+}
+.sf-menu.sf-style-hrwebsuperfish li li {
+  background: #D5DDEF;
+  }
+.sf-menu.sf-style-hrwebsuperfish li li li {
+  background: #D5DDEF;
+  }
+  
+.sf-depth-2 {text-align: left; padding-left: 30px !important;}
+
+  
+/*.sf-menu.sf-style-hrwebsuperfish li:hover,
+.sf-menu.sf-style-hrwebsuperfish li.sfHover,
+.sf-menu.sf-style-hrwebsuperfish a:focus,
+.sf-menu.sf-style-hrwebsuperfish a:hover,
+.sf-menu.sf-style-hrwebsuperfish a:active {
+  background: #CFDEFF;
+  outline: 0;
+}*/
+.sf-menu.sf-style-hrwebsuperfish ul.sf-megamenu li.sf-megamenu-wrapper ol,
+.sf-menu.sf-style-hrwebsuperfish ul.sf-megamenu li.sf-megamenu-wrapper ol li {
+  margin: 0;
+  padding: 0;
+}
+.sf-menu.sf-style-hrwebsuperfish ul.sf-megamenu li.sf-megamenu-wrapper a.menuparent {
+  font-weight: bold;
+}
+
+
+
+/*Superfish Children - off Main menu */
+
+#superfish-1 ul.sf-hidden { float: none; display: block; width: 18em; }
+
+
+
+#superfish-1-toggle {display: none;}
