@@ -119,17 +119,18 @@
         <?php endif; ?>
 
       </div> <!-- /#name-and-slogan -->
-    <?php endif; ?>
+    <?php endif; ?><div class="space"></div>
 
     <?php print render($page['header']); ?>
 
     <?php if ($main_menu): ?>
+        
       <div id="main-menu" class="navigation">
         <?php print theme('links__system_main_menu', array(
           'links' => $main_menu,
           'attributes' => array(
             'id' => 'main-menu-links',
-            'class' => array('links', 'clearfix'),
+            'class' => array('links', 'clearfix', 'hover-shadow'),
           ),
           'heading' => array(
             'text' => t('Main menu'),
