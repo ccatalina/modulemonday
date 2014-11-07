@@ -245,6 +245,6 @@
 
   </div></div> <!-- /.section, /#footer-wrapper -->
   <div id="spacetext">
-  <div class="float-shadow">STARE INTO THE DRUPAL ETHER</div>
+  <div class="pulse">STARE INTO THE DRUPAL ETHER</div>
   </div>
 </div></div> <!-- /#page, /#page-wrapper -->
