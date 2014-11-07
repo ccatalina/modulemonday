@@ -1651,3 +1651,14 @@ div.admin-panel .description {
 #footer-wrapper .poll .bar .foreground {
   background-color: #ddd;
 }
+
+
+#spacetext{
+    background-color:rgba(0,0,0,0);
+    color: #ffffff;
+    text-align: center;
+    position: absolute;
+    top: 1670px;
+left: 190px;
+font-size: 7em;
+   }
