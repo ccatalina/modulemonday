@@ -244,7 +244,4 @@
     <?php endif; ?>
 
   </div></div> <!-- /.section, /#footer-wrapper -->
-  <div id="spacetext">
-  <div class="pulse">STARE INTO THE DRUPAL ETHER</div>
-  </div>
 </div></div> <!-- /#page, /#page-wrapper -->
