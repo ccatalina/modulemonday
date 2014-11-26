@@ -82,9 +82,6 @@ function workbench_moderation_node_history_view($node) {
   // Page title.
   drupal_set_title(t('History of %title', array('%title' => $node->title)), PASS_THROUGH);
 
-  // see https://drupal.org/node/2011762
-  drupal_get_messages('warning', TRUE);
-
   // Alert if there is no live node
   if (!isset($node->workbench_moderation['published'])) {
     drupal_set_message(t('Currently there is no published revision of this node.'), 'warning');
@@ -138,32 +135,17 @@ function workbench_moderation_node_history_view($node) {
     // Revision operations.
     $revision_operations = array();
     if (isset($node->workbench_moderation['published']) && $revision->vid == $node->workbench_moderation['published']->vid) {
-      $revision_operations['view'] = workbench_moderation_access_link(t('View'), "node/{$revision->nid}");
+      $revision_operations['view'] = workbench_moderation_access_link(t('view'), "node/{$revision->nid}");
     }
     elseif ($revision->vid == $node->workbench_moderation['current']->vid) {
-      $revision_operations['view'] = workbench_moderation_access_link(t('View'), "node/{$revision->nid}/current-revision");
+      $revision_operations['view'] = workbench_moderation_access_link(t('view'), "node/{$revision->nid}/current-revision");
     }
     else {
-      $revision_operations['view'] = workbench_moderation_access_link(t('View'), "node/{$revision->nid}/revisions/{$revision->vid}/view");
+      $revision_operations['view'] = workbench_moderation_access_link(t('view'), "node/{$revision->nid}/revisions/{$revision->vid}/view");
     }
 
-    // Provide a courtesy edit operation if this is the current revision.
-    if ($revision->vid == $node->workbench_moderation['current']->vid) {
-      // The edit operation's default link title, "Edit draft", matches
-      // the logic tree in workbench_moderation_edit_tab_title().
-      $edit_operation_title = t('Edit draft');
-
-      // Modify the edit operation's link title to "New draft", matching the
-      // logic tree in workbench_moderation_edit_tab_title() when the current
-      // revision is the published node.
-      if (isset($node->workbench_moderation['published']) && $revision->vid == $node->workbench_moderation['published']->vid) {
-        $edit_operation_title = t('New draft');
-      }
-      $revision_operations['edit'] = l($edit_operation_title, "node/{$revision->nid}/edit", array('query' => array('destination' => "node/{$revision->nid}/moderation")));
-    }
-
-    $revision_operations['revert'] = workbench_moderation_access_link(t('Revert'), "node/{$revision->nid}/revisions/{$revision->vid}/revert");
-    $revision_operations['delete'] = workbench_moderation_access_link(t('Delete'), "node/{$revision->nid}/revisions/{$revision->vid}/delete");
+    $revision_operations['revert'] = workbench_moderation_access_link(t('revert'), "node/{$revision->nid}/revisions/{$revision->vid}/revert");
+    $revision_operations['delete'] = workbench_moderation_access_link(t('delete'), "node/{$revision->nid}/revisions/{$revision->vid}/delete");
 
     $row['data']['revision'] = implode(' | ', array_filter($revision_operations));
 

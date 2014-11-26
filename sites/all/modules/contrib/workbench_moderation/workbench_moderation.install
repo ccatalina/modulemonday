@@ -18,33 +18,6 @@ function workbench_moderation_install() {
 }
 
 /**
- * Implements hook_uninstall().
- */
-function workbench_moderation_uninstall() {
-
-  // Delete workbench_moderation variables.
-  variable_del('workbench_moderation_nodedraft_disabled');
-  variable_del('workbench_moderation_per_node_type');
-  variable_del('workbench_moderation_show_revision_navigation');
-
-  // Get all node types. Loop through them and delete workbench-related variables.
-  $types = node_type_get_types();
-  foreach ($types as $type_object) {
-    $type = $type_object->type;
-    variable_del("workbench_moderation_default_state_$type");
-
-    // Get node options that might hold a moderation flag.
-    $node_options = variable_get("node_options_$type", array());
-    foreach ($node_options as $key => $option) {
-      if ($option === 'moderation') {
-        unset($node_options[$key]);
-      }
-    }
-    variable_set("node_options_$type", $node_options);
-  }
-}
-
-/**
  * Implements hook_schema().
  */
 function workbench_moderation_schema() {
@@ -55,7 +28,7 @@ function workbench_moderation_schema() {
         'description' => 'The machine name of the moderation state.',
         'type' => 'varchar',
         'length' => '255',
-        'not null' => TRUE,
+        'not null' => FALSE,
       ),
       'label' => array(
         'description' => 'A label for the moderation state.',
@@ -155,7 +128,7 @@ function workbench_moderation_schema() {
         'default' => 0,
         'disp-width' => '10',
       ),
-      'is_current' => array(
+      'current' => array(
         'description' => 'Indicated the current revision of a node.',
         'type' => 'int',
         'unsigned' => TRUE,
@@ -595,36 +568,4 @@ function workbench_moderation_update_7007() {
     '%from' => $transition->from_name,
     '%to' => $transition->to_name,
   ));
-}
-
-/**
- * Fix the not null column schema for {workbench_moderation_states}.name.
- */
-function workbench_moderation_update_7008() {
-  db_drop_primary_key('workbench_moderation_states');
-  db_change_field('workbench_moderation_states', 'name', 'name', array(
-    'description' => 'The machine name of the moderation state.',
-    'type' => 'varchar',
-    'length' => '255',
-    'not null' => TRUE,
-  ));
-  db_add_primary_key('workbench_moderation_states', array('name'));
-}
-
-/**
- * Comply with SQL-99:  Rename the 'current' column to 'is_current'.
- */
-function workbench_moderation_update_7009() {
-  $table = 'workbench_moderation_node_history';
-  $field = 'current';
-  $field_new = 'is_current';
-  $spec = array(
-    'description' => 'Indicated the current revision of a node.',
-    'type' => 'int',
-    'unsigned' => TRUE,
-    'not null' => TRUE,
-    'default' => 0,
-  );
-  db_change_field($table, $field, $field_new, $spec);
-  return t("Renamed 'current' column in node_history table");
 }

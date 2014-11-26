@@ -149,12 +149,6 @@ $handler->display->display_options['fields']['timestamp']['table'] = 'node_revis
 $handler->display->display_options['fields']['timestamp']['field'] = 'timestamp';
 $handler->display->display_options['fields']['timestamp']['label'] = 'Last updated';
 $handler->display->display_options['fields']['timestamp']['date_format'] = 'time ago';
-/* Field: Content: Edit link */
-$handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
-$handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
-$handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
-$handler->display->display_options['fields']['edit_node']['relationship'] = 'vid';
-$handler->display->display_options['fields']['edit_node']['label'] = 'Operations';
 /* Sort criterion: Content: Updated date */
 $handler->display->display_options['sorts']['changed']['id'] = 'changed';
 $handler->display->display_options['sorts']['changed']['table'] = 'node';
@@ -271,7 +265,6 @@ $translatables['workbench_edited'] = array(
   t('Type'),
   t('Published'),
   t('Last updated'),
-  t('Operations'),
   t('Page'),
   t('more'),
   t('Block'),

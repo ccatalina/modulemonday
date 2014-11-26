@@ -349,13 +349,6 @@ function workbench_moderation_admin_paths() {
   if (variable_get('node_admin_theme')) {
     $paths = array(
       'node/*/moderation' => TRUE,
-      'node/*/moderation/*/unpublish' => TRUE,
-      'node/*/moderation/*/change-state/*' => TRUE,
-      'node/*/moderation/view' => TRUE,
-      'node/*/moderation/diff' => TRUE,
-      'node/*/moderation/diff/list' => TRUE,
-      'node/*/moderation/diff/view' => TRUE,
-      'node/*/moderation/diff/view/*/*' => TRUE,
     );
     return $paths;
   }
@@ -544,7 +537,7 @@ function _workbench_moderation_moderate_access($node, $state) {
   $my_revision = $node->workbench_moderation['my_revision'];
   $next_states = workbench_moderation_states_next($my_revision->state, $user, $node);
   $access = node_access('update', $node, $user)       // the user can edit the node
-          && $my_revision->is_current                 // this is the current revision (no branching the revision history)
+          && $my_revision->current                    // this is the current revision (no branching the revision history)
           && (!empty($next_states))                   // there are next states the user may transition to
           && isset($next_states[$state]);             // this state is in the available next states
 
@@ -692,7 +685,7 @@ function workbench_moderation_node_update($node) {
       'nid' => $node->nid,
       'vid' => $node->vid,
       'uid' => $user->uid,
-      'is_current' => TRUE,
+      'current' => TRUE,
       'published' => FALSE,
       'stamp' => $node->changed,
     );
@@ -851,12 +844,12 @@ function workbench_moderation_form_node_form_alter(&$form, $form_state) {
   );
 
   // Set a default revision log message.
-  $logged_name = (user_is_anonymous() ? variable_get('anonymous', t('Anonymous')) : format_username($user));
+  $logged_name = (user_is_anonymous() ? variable_get('anonymous', t('Anonymous')) : $user->name);
   if (!empty($form['#node']->nid)) {
-    $form['revision_information']['log']['#default_value'] = t('Edited by !user.', array('!user' => $logged_name));
+    $form['revision_information']['log']['#default_value'] = t('Edited by @user.', array('@user' => $logged_name));
   }
   else {
-    $form['revision_information']['log']['#default_value'] = t('Created by !user.', array('!user' => $logged_name));
+    $form['revision_information']['log']['#default_value'] = t('Created by @user.', array('@user' => $logged_name));
   }
 
   // Move the revision log into the publishing options to make things pretty.
@@ -1024,11 +1017,9 @@ function workbench_moderation_node_data($node) {
   if (module_exists('path') && isset($node->nid)) {
     $path = array();
     $conditions = array('source' => 'node/' . $node->nid);
-    $langcode = entity_language('node', $node);
-    if ($langcode != LANGUAGE_NONE) {
-      $conditions['language'] = $langcode;
+    if ($node->language != LANGUAGE_NONE) {
+      $conditions['language'] = $node->language;
     }
-
     $path = path_load($conditions);
     if ($path === FALSE) {
       $path = array();
@@ -1059,7 +1050,7 @@ function workbench_moderation_node_data($node) {
     'uid' => $node->uid,
     'stamp' => $node->changed,
     'published' => $node->status,
-    'is_current' => 1,
+    'current' => 1,
   );
 
   // We'll store moderation state information in an array on the node.
@@ -1090,7 +1081,7 @@ function workbench_moderation_node_data($node) {
     }
   }
 
-  $current->is_current = 1;
+  $current->current = 1;
   $node->workbench_moderation['current'] = $current;
 
   // Fetch the published revision. There may not be a workbench_moderation
@@ -1149,7 +1140,7 @@ function workbench_moderation_node_data($node) {
         'uid' => $node->uid,
         'stamp' => $node->changed,
         'published' => 0,
-        'is_current' => 0,
+        'current' => 0,
       );
     }
   }
@@ -1226,7 +1217,7 @@ function workbench_moderation_node_is_current($node) {
  *   state object has name, description, and weight properties.
  */
 function workbench_moderation_states() {
-  $states = &drupal_static(__FUNCTION__);
+  static $states;
   if (!isset($states)) {
     $states = db_select('workbench_moderation_states', 'states')
       ->fields('states', array('name', 'label', 'description', 'weight'))
@@ -1335,7 +1326,7 @@ function workbench_moderation_state_delete($state) {
  *   'from' states, then by the weight of the 'to' states.
  */
 function workbench_moderation_transitions() {
-  $transitions = &drupal_static(__FUNCTION__);
+  static $transitions;
   if (!isset($transitions)) {
     $query = db_select('workbench_moderation_transitions', 't')
       ->fields('t', array('from_name', 'to_name'));
@@ -1481,17 +1472,17 @@ function workbench_moderation_moderate($node, $state) {
     'nid' => $node->nid,
     'vid' => $node->vid,
     'uid' => $user->uid,
-    'is_current' => $current,
+    'current' => $current,
     'published' => ($state == workbench_moderation_state_published()),
     'stamp' => $_SERVER['REQUEST_TIME'],
   );
 
   // If this is the new 'current' moderation record, it should be the only one
   // flagged 'current' in {workbench_moderation_node_history}.
-  if ($new_revision->is_current) {
+  if ($new_revision->current) {
     $query = db_update('workbench_moderation_node_history')
       ->condition('nid', $node->nid)
-      ->fields(array('is_current' => 0))
+      ->fields(array('current' => 0))
       ->execute();
   }
 
@@ -1515,7 +1506,7 @@ function workbench_moderation_moderate($node, $state) {
   // Update the node's content_moderation information so that we can publish it
   // if necessary.
   $node->workbench_moderation['my_revision'] = $new_revision;
-  if ($new_revision->is_current) {
+  if ($new_revision->current) {
     $node->workbench_moderation['current'] = $new_revision;
   }
   // Handle the published revision.
@@ -1564,11 +1555,8 @@ function workbench_moderation_store($node) {
     watchdog('Workbench moderation', 'Failed to save node revision: node not passed to shutdown function.', array(), WATCHDOG_NOTICE);
     return;
   }
-  if(!$live_revision = workbench_moderation_node_live_load($node)) {
-    watchdog('Workbench moderation', 'There is no longer a live version to ensure is published.', array(), WATCHDOG_NOTICE);
-    return;
-  }
   watchdog('Workbench moderation', 'Saved node revision: %node as live version for node %live.', array('%node' => $node->vid, '%live' => $node->nid), WATCHDOG_NOTICE, l($node->title, 'node/' . $node->nid));
+  $live_revision = workbench_moderation_node_live_load($node);
   // Make sure we're published.
   $live_revision->status = 1;
   // Don't create a new revision.
@@ -1579,7 +1567,6 @@ function workbench_moderation_store($node) {
   // Reset flag from taxonomy_field_update() so that {taxonomy_index} values aren't written twice.
   $taxonomy_index_flag = &drupal_static('taxonomy_field_update', array());
   unset($taxonomy_index_flag[$node->nid]);
-  $live_revision->path['pathauto'] = 0;
 
   // Save the node.
   node_save($live_revision);
@@ -2118,103 +2105,4 @@ function workbench_moderation_ctools_plugin_api($module, $api) {
  */
 function workbench_moderation_migrate_api() {
   return array('api' => 2);
-}
-
-/**
- * Implement hook_ctools_plugin_pre
- * If this is a the ctools node_edit arguments plugin provide a different context
- * creation callback.
- * Also if this a page manager node_edit tasks plugin provide a different
- * hook_menu_alter callback.
- */
-function workbench_moderation_ctools_plugin_pre_alter(&$plugin, $plugin_type_info){
-  if ($plugin_type_info['type'] == 'arguments' && $plugin['name'] == 'node_edit') {
-    $plugin['context'] = 'workbench_moderation_node_edit_context';
-  }
-  if ($plugin_type_info['type'] == 'tasks' && $plugin['name'] == 'node_edit') {
-    $plugin['hook menu alter'] = 'workbench_moderation_page_manager_node_edit_menu_alter_callback';
-  }
-}
-
-/**
- * Custom hook_menu_alter callback for the page_manager node_edit tasks plugin.
- * @see workbench_moderation_ctools_plugin_pre_alter
- *
- * This callback is the same as the original defined in the plugin, except that
- * it allows the menu item for node/%node/edit to be handled by
- * page_manager_node_edit even though workbench_moderation has its own
- * hook_menu_alter implementation that defined a different page callback.
- * Page manager can handle this path for workbench moderated nodes because of
- * workbench_moderation_node_edit_context().
- */
-function workbench_moderation_page_manager_node_edit_menu_alter_callback(&$items, $task) {
-  if (variable_get('page_manager_node_edit_disabled', TRUE)) {
-    return;
-  }
-
-  $callback = $items['node/%node/edit']['page callback'];
-  // Override the node edit handler for our purpose.
-  if ($callback == 'node_page_edit' || $callback == 'workbench_moderation_node_edit_page_override' || variable_get('page_manager_override_anyway', FALSE)) {
-    $items['node/%node/edit']['page callback'] = 'page_manager_node_edit';
-    $items['node/%node/edit']['file path'] = $task['path'];
-    $items['node/%node/edit']['file'] = $task['file'];
-  }
-  else {
-    variable_set('page_manager_node_edit_disabled', TRUE);
-    if (!empty($GLOBALS['page_manager_enabling_node_edit'])) {
-      drupal_set_message(t('Page manager module is unable to enable node/%node/edit because some other module already has overridden with %callback.', array('%callback' => $callback)), 'warning');
-    }
-    return;
-  }
-
-  // Also catch node/add handling:
-  foreach (node_type_get_types() as $type) {
-    $path = 'node/add/' . str_replace('_', '-', $type->type);
-    if ($items[$path]['page callback'] != 'node_add') {
-      if (!empty($GLOBALS['page_manager_enabling_node_edit'])) {
-        drupal_set_message(t('Page manager module is unable to override @path because some other module already has overridden with %callback. Node edit will be enabled but that edit path will not be overridden.', array('@path' => $path, '%callback' => $items[$path]['page callback'])), 'warning');
-      }
-      continue;
-    }
-
-    $items[$path]['page callback'] = 'page_manager_node_add';
-    $items[$path]['file path'] = $task['path'];
-    $items[$path]['file'] = $task['file'];
-    // Why str_replace things back?
-    $items[$path]['page arguments'] = array($type->type);
-  }
-}
-
-
-/**
- * Custom context creation callback for the ctools node_edit arguments plugin
- * @see workbench_moderation_ctools_plugin_pre_alter
- *
- * This takes the node or nid and loads the correct node by calling
- * workbench_moderation_node_current_load.
- */
-function workbench_moderation_node_edit_context($arg = NULL, $conf = NULL, $empty = FALSE) {
-    // If unset it wants a generic, unfilled context.
-  if ($empty) {
-    return ctools_context_create_empty('node_edit_form');
-  }
-
-  // We can accept either a node object or a pure nid.
-  if (is_object($arg)) {
-    $node = workbench_moderation_node_current_load($arg);
-    return ctools_context_create('node_edit_form', $node);
-  }
-
-  if (!is_numeric($arg)) {
-    return FALSE;
-  }
-
-  $node = node_load($arg);
-  $node = workbench_moderation_node_current_load($node);
-  if (!$node) {
-    return NULL;
-  }
-
-  // This will perform a node_access check, so we don't have to.
-  return ctools_context_create('node_edit_form', $node);
 }
