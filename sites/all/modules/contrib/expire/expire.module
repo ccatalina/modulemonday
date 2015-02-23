@@ -14,6 +14,13 @@ define('EXPIRE_STATUS_DISABLED', 0);
 define('EXPIRE_STATUS_ENABLED_INTERNAL', 1);
 define('EXPIRE_STATUS_ENABLED_EXTERNAL', 2);
 
+// This setting should be disabled when varnish or acquia_purge modules are
+// used as cache backends. Not until this issue is fixed in varnish module:
+// https://drupal.org/node/2017097 (OR in expire). The default is true,
+// setting it to false by default could be preferable, but could also cause
+// unnecessary confusion from old users - so it stays as true.
+define('EXPIRE_INCLUDE_BASE_URL', TRUE);
+
 // Node actions.
 define('EXPIRE_NODE_INSERT', 1);
 define('EXPIRE_NODE_UPDATE', 2);
@@ -48,29 +55,35 @@ define('EXPIRE_MENU_LINK_DELETE', 3);
 // Debug levels.
 define('EXPIRE_DEBUG_DISABLED', 0);
 define('EXPIRE_DEBUG_WATCHDOG', 1);
-define('EXPIRE_DEBUG_FULL', 2);
+define('EXPIRE_DEBUG_FULL',     2);
 
 // Default values for cache expiration.
-define('EXPIRE_NODE_FRONT_PAGE'             , FALSE);
-define('EXPIRE_NODE_NODE_PAGE'              , TRUE);
-define('EXPIRE_NODE_TERM_PAGES'             , FALSE);
-define('EXPIRE_NODE_REFERENCE_PAGES'        , FALSE);
-define('EXPIRE_NODE_CUSTOM'                 , FALSE);
-define('EXPIRE_COMMENT_FRONT_PAGE'          , FALSE);
-define('EXPIRE_COMMENT_COMMENT_PAGE'        , TRUE);
-define('EXPIRE_COMMENT_NODE_PAGE'           , TRUE);
-define('EXPIRE_COMMENT_NODE_TERM_PAGES'     , FALSE);
-define('EXPIRE_COMMENT_NODE_REFERENCE_PAGES', FALSE);
-define('EXPIRE_COMMENT_CUSTOM'              , FALSE);
-define('EXPIRE_USER_FRONT_PAGE'             , FALSE);
-define('EXPIRE_USER_USER_PAGE'              , TRUE);
-define('EXPIRE_USER_CUSTOM'                 , FALSE);
-define('EXPIRE_VOTINGAPI_ENTITY'            , FALSE);
-define('EXPIRE_VOTINGAPI_ENTITY_PAGE'       , FALSE);
-define('EXPIRE_VOTINGAPI_CUSTOM'            , FALSE);
-define('EXPIRE_FILE_FILE'                   , FALSE);
-define('EXPIRE_FILE_FRONT_PAGE'             , FALSE);
-define('EXPIRE_FILE_CUSTOM'                 , FALSE);
+define('EXPIRE_NODE_FRONT_PAGE'                 , FALSE);
+define('EXPIRE_NODE_NODE_PAGE'                  , TRUE);
+define('EXPIRE_NODE_TERM_PAGES'                 , FALSE);
+define('EXPIRE_NODE_REFERENCE_PAGES'            , FALSE);
+define('EXPIRE_NODE_REFERENCE_FC_PAGES'         , FALSE);
+define('EXPIRE_NODE_CUSTOM'                     , FALSE);
+define('EXPIRE_COMMENT_FRONT_PAGE'              , FALSE);
+define('EXPIRE_COMMENT_COMMENT_PAGE'            , TRUE);
+define('EXPIRE_COMMENT_REFERENCE_PAGES'         , FALSE);
+define('EXPIRE_COMMENT_NODE_PAGE'               , TRUE);
+define('EXPIRE_COMMENT_NODE_TERM_PAGES'         , FALSE);
+define('EXPIRE_COMMENT_NODE_REFERENCE_PAGES'    , FALSE);
+define('EXPIRE_COMMENT_NODE_REFERENCE_FC_PAGES' , FALSE);
+define('EXPIRE_COMMENT_CUSTOM'                  , FALSE);
+define('EXPIRE_USER_FRONT_PAGE'                 , FALSE);
+define('EXPIRE_USER_USER_PAGE'                  , TRUE);
+define('EXPIRE_USER_TERM_PAGES'                 , FALSE);
+define('EXPIRE_USER_REFERENCE_PAGES'            , FALSE);
+define('EXPIRE_USER_REFERENCE_FC_PAGES'         , FALSE);
+define('EXPIRE_USER_CUSTOM'                     , FALSE);
+define('EXPIRE_VOTINGAPI_ENTITY'                , FALSE);
+define('EXPIRE_VOTINGAPI_ENTITY_PAGE'           , FALSE);
+define('EXPIRE_VOTINGAPI_CUSTOM'                , FALSE);
+define('EXPIRE_FILE_FILE'                       , FALSE);
+define('EXPIRE_FILE_FRONT_PAGE'                 , FALSE);
+define('EXPIRE_FILE_CUSTOM'                     , FALSE);
 
 /**
  * Implementation of hook_menu().
@@ -252,7 +265,7 @@ function expire_execute_expiration($type, $object, $action) {
  * @return mixed
  */
 function _expire_get_expiration_handler($type) {
-  static $cache_objects;
+  $cache_objects = &drupal_static('expire_cache_objects', array());
   if (!isset($cache_objects[$type])) {
 
     // Make class names more readable.
@@ -266,6 +279,23 @@ function _expire_get_expiration_handler($type) {
     $cache_objects[$type] = class_exists($class) ? new $class() : FALSE;
   }
   return $cache_objects[$type];
+}
+
+/**
+ * Loads and returns a single entity.
+ *
+ * @param $entity_type
+ *   The entity type to load.
+ *
+ * @param $entity_id
+ *   The ID of the Entity to load.
+ *
+ * @return mixed
+ *   The desired entity or FALSE if it couldn't be found.
+ */
+function _expire_load_single_entity($entity_type, $entity_id) {
+  $loaded_entity = entity_load($entity_type, array($entity_id));
+  return reset($loaded_entity);
 }
 
 /**

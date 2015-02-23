@@ -15,9 +15,9 @@ files[] = includes/expire.user.inc
 files[] = includes/expire.votingapi.inc
 files[] = includes/expire.file.inc
 
-; Information added by Drupal.org packaging script on 2013-12-15
-version = "7.x-2.0-beta2+6-dev"
+; Information added by Drupal.org packaging script on 2014-10-31
+version = "7.x-2.0-rc4"
 core = "7.x"
 project = "expire"
-datestamp = "1387123407"
+datestamp = "1414746830"
 

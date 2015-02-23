@@ -82,7 +82,7 @@ function expire_drush_command() {
       'drush xp-comment 2 24 612' => 'Expire multiple comments by their IDs.',
     ),
     'aliases' => array('xp-comment'),
-    'drupal dependencies' => array('expire'),
+    'drupal dependencies' => array('expire', 'comment'),
     'callback' => 'drush_expire_comment'
   );
 
@@ -108,13 +108,19 @@ function drush_expire_absolute_url() {
 function drush_expire_internal_path() {
 
   // Get drush params.
-  $internal_paths = drush_get_arguments();
-  unset($internal_paths[0]);
+  $paths = drush_get_arguments();
+  unset($paths[0]);
 
-  foreach ($internal_paths as &$path) {
-    $path = $path === 'FRONT' ? '<front>' : $path;
+  $internal_paths = array();
+  foreach ($paths as &$path) {
+    if ($path === 'FRONT') {
+      $internal_paths += ExpireAPI::getFrontPageUrls();
+    }
+    else {
+      $internal_paths[] = $path;
+    }
   }
-
+ 
   // Expire internal paths.
   ExpireAPI::executeExpiration($internal_paths);
 }
