@@ -1,3 +1,5 @@
+NOTE: This is a D8 port of Geofield by Brandonian for purely testing purposes. Don't expect it to actually work on a site.
+
                   __ _      _     _
                  / _(_)    | |   | |
  __ _  ___  ___ | |_ _  ___| | __| |
@@ -74,7 +76,7 @@ that is stores. At its heart is the 'wkt' column where it stores the full
 geometry in the 'Well Known Text' (WKT) format. All other columns are metadata
 derived from the WKT column. Columns are as follows:
 
-  'geom'         Raw value. By default, stored as WKB, loaded as WKT
+  'wkt'          WKT
   'geo_type'     Type of geometry (point, linestring, polygon etc.)
   'lat'          Centroid (Latitude or Y)
   'lon'          Centroid (Longitude or X)
@@ -82,7 +84,6 @@ derived from the WKT column. Columns are as follows:
   'bottom'       Bounding Box Bottom (Latitude or Min Y)
   'left'         Bounding Box Left (Longitude or Min X)
   'right'        Bounding Box Right (Longitude or Max X)
-  'geohash'      Geohash equivalent of geom column value
 
 When a geofield is saved using the provided widgets, these values are passed
 through the geofield_compute_values function in order to compute dependent
