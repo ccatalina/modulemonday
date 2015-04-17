@@ -2,16 +2,19 @@
 CONTENTS OF THIS FILE
 ---------------------
 
- * Module Monday's Drupal 7 site for NYS Drupal module evaluation and testing.
- * This is just code w/o the database. If you work on this stuff with our Drupal group and want the database, email me.
+ * About Drupal
+ * Configuration and features
+ * Installation profiles
+ * Appearance
+ * Developing for Drupal
 
 ABOUT DRUPAL
 ------------
 
-Drupal is an open source crazy complicated content management platform supporting a variety of
-insane websites ranging from personal crap weblogs to less than impressive large community-driven websites. For
+Drupal is an open source content management platform supporting a variety of
+websites ranging from personal weblogs to large community-driven websites. For
 more information, see the Drupal website at http://drupal.org/, and join the
-Drupal community at http://drupal.org/community. Because its awesome.
+Drupal community at http://drupal.org/community.
 
 Legal information about Drupal:
  * Know your rights when using Drupal:
@@ -19,14 +22,13 @@ Legal information about Drupal:
  * Learn about the Drupal trademark and logo policy:
    http://drupal.com/trademark
 
-CONFIGURATION AND PURPLE UNICORNS
-----------------------------------
+CONFIGURATION AND FEATURES
+--------------------------
 
 Drupal core (what you get when you download and extract a drupal-x.y.tar.gz or
 drupal-x.y.zip file from http://drupal.org/project/drupal) has what you need to
-get started with your website. It includes several modules you will never use
-(extensions that add functionality) for common website features, such as managing
-content or static crap that shouldn't be on a Drupal site, user
+get started with your website. It includes several modules (extensions that add
+functionality) for common website features, such as managing content, user
 accounts, image uploading, and search. Core comes with many options that allow
 site-specific configuration. In addition to the core modules, there are
 thousands of contributed modules (for functionality not included with Drupal

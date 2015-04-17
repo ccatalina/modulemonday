@@ -119,18 +119,17 @@
         <?php endif; ?>
 
       </div> <!-- /#name-and-slogan -->
-    <?php endif; ?><div class="space"></div>
+    <?php endif; ?>
 
     <?php print render($page['header']); ?>
 
     <?php if ($main_menu): ?>
-        
       <div id="main-menu" class="navigation">
         <?php print theme('links__system_main_menu', array(
           'links' => $main_menu,
           'attributes' => array(
             'id' => 'main-menu-links',
-            'class' => array('links', 'clearfix', 'hover-shadow'),
+            'class' => array('links', 'clearfix'),
           ),
           'heading' => array(
             'text' => t('Main menu'),
@@ -227,7 +226,7 @@
   <?php endif; ?>
 
   <div id="footer-wrapper"><div class="section">
-      
+
     <?php if ($page['footer_firstcolumn'] || $page['footer_secondcolumn'] || $page['footer_thirdcolumn'] || $page['footer_fourthcolumn']): ?>
       <div id="footer-columns" class="clearfix">
         <?php print render($page['footer_firstcolumn']); ?>
@@ -244,4 +243,5 @@
     <?php endif; ?>
 
   </div></div> <!-- /.section, /#footer-wrapper -->
+
 </div></div> <!-- /#page, /#page-wrapper -->
